@@ -19,14 +19,15 @@ enum State {
 enum Event {
     TableStart,
     TableEnd,
-    ReadTextStart,
-    ReadTextEnd(String),
-    ReadTableTitleStart,
-    ReadTableTitleEnd(String),
-    ReadTemplateStart,
-    ReadTemplateEnd(String),
-    ReadLinkStart,
-    ReadLinkEnd(String),
+    ColStart,
+    ColStyle(String),
+    ColEnd(String),
+    TableTitleStart,
+    TableTitleEnd(String),
+    TemplateStart,
+    TemplateEnd(String),
+    LinkStart,
+    LinkEnd(String),
     RowSep,
 }
 
@@ -68,9 +69,9 @@ impl StateMachine {
                 }
             }
             State::ReadTableStyle => {
-                self.transition(Event::ReadTextStart);
+                self.transition(Event::ColStart);
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTextEnd(buffer_string));
+                    self.transition(Event::ColEnd(buffer_string));
                     self.clear_buffer();
                 }
             }
@@ -80,16 +81,16 @@ impl StateMachine {
                     .unwrap()
                     .is_match(&buffer_string)
                 {
-                    self.transition(Event::ReadTextStart);
+                    self.transition(Event::ColStart);
                 }
                 // match ! or !!}
                 else if Regex::new(r"!").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTextStart);
+                    self.transition(Event::ColStart);
                     // self.clear_buffer();
                 }
                 // table title |+
-                else if Regex::new(r"\|\+\s+").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTableTitleStart);
+                else if Regex::new(r"\|\+").unwrap().is_match(&buffer_string) {
+                    self.transition(Event::TableTitleStart);
                     self.clear_buffer();
                 }
                 // row sep |-
@@ -106,47 +107,53 @@ impl StateMachine {
             State::ReadColText => {
                 // match \n
                 if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTextEnd(buffer_string));
+                    self.transition(Event::ColEnd(buffer_string));
                     self.clear_buffer();
                 }
                 // match ||
                 else if Regex::new(r"\|\|$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTextEnd(buffer_string));
+                    self.transition(Event::ColEnd(buffer_string));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
-                    self.transition(Event::ReadTextStart);
+                    self.transition(Event::ColStart);
                 }
                 // match !!
                 else if Regex::new(r"!{2}$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTextEnd(buffer_string));
+                    self.transition(Event::ColEnd(buffer_string));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
-                    self.transition(Event::ReadTextStart);
+                    self.transition(Event::ColStart);
                 }
                 // match {{ (a wiki template start)
                 else if Regex::new(r"\{\{$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTemplateStart);
+                    self.transition(Event::TemplateStart);
                 }
                 // match [[ (a link sytanx start)
                 else if Regex::new(r"\[\[$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadLinkStart);
+                    self.transition(Event::LinkStart);
+                }
+
+                // match `<col_style>|` in col
+                else if Regex::new(r"\|[^\|]$").unwrap().is_match(&buffer_string) {
+                    self.transition(Event::ColStyle(buffer_string));
+                    self.clear_buffer();
                 }
             }
             State::ReadTableTitle => {
                 // \n
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTableTitleEnd(buffer_string));
+                    self.transition(Event::TableTitleEnd(buffer_string));
                     self.clear_buffer();
                 }
             }
             State::ReadTemplate => {
                 if Regex::new(r"\}\}$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadTemplateEnd(buffer_string));
+                    self.transition(Event::TemplateEnd(buffer_string));
                 }
             }
             State::ReadLink => {
                 if Regex::new(r"\]\]$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ReadLinkEnd(buffer_string));
+                    self.transition(Event::LinkEnd(buffer_string));
                 }
             }
         }
@@ -158,20 +165,20 @@ impl StateMachine {
             (State::Idle, Event::TableStart) => self.state = State::ReadTableStyle,
 
             // State::ReadTableStyle
-            (State::ReadTableStyle, Event::ReadTextEnd(text)) => {
+            (State::ReadTableStyle, Event::ColEnd(text)) => {
                 println!("table_style {}", text);
                 self.state = State::InsideTable
             }
 
             // State::ReadTableTitle
-            (State::ReadTableTitle, Event::ReadTableTitleEnd(text)) => {
+            (State::ReadTableTitle, Event::TableTitleEnd(text)) => {
                 println!("table title {}", text);
                 self.state = State::InsideTable
             }
 
             // State::InsideTable
-            (State::InsideTable, Event::ReadTableTitleStart) => self.state = State::ReadTableTitle,
-            (State::InsideTable, Event::ReadTextStart) => self.state = State::ReadColText,
+            (State::InsideTable, Event::TableTitleStart) => self.state = State::ReadTableTitle,
+            (State::InsideTable, Event::ColStart) => self.state = State::ReadColText,
             (State::InsideTable, Event::TableEnd) => {
                 self.state = State::Idle;
                 println!("====== TABLE EOF ======")
@@ -181,21 +188,24 @@ impl StateMachine {
             }
 
             // State::ReadTemplate
-            (State::ReadTemplate, Event::ReadTemplateEnd(text)) => {
+            (State::ReadTemplate, Event::TemplateEnd(text)) => {
                 self.state = State::ReadColText;
             }
 
             // State::ReadColText
-            (State::ReadColText, Event::ReadTemplateStart) => self.state = State::ReadTemplate,
-            (State::ReadColText, Event::ReadLinkStart) => self.state = State::ReadLink,
-            (State::ReadColText, Event::ReadTextEnd(text)) => {
+            (State::ReadColText, Event::TemplateStart) => self.state = State::ReadTemplate,
+            (State::ReadColText, Event::LinkStart) => self.state = State::ReadLink,
+            (State::ReadColText, Event::ColStyle(text))=>{
+                print!("col_style {:?}#",text);
+            }
+            (State::ReadColText, Event::ColEnd(text)) => {
                 let col_text = text.clone().trim().to_string();
                 println!("col_text {:?}#", col_text);
                 self.state = State::InsideTable
             }
 
             // State::ReadLink
-            (State::ReadLink, Event::ReadLinkEnd(_)) => self.state = State::ReadColText,
+            (State::ReadLink, Event::LinkEnd(_)) => self.state = State::ReadColText,
             (_, _) => {}
         }
     }
