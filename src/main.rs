@@ -14,6 +14,7 @@ enum State {
     ReadTemplate,
     ReadLink,
     ReadRow,
+    ReadHtml,
 }
 
 #[derive(Debug)]
@@ -33,6 +34,8 @@ enum Event {
     LinkEnd(String),
     RowStart,
     RowEnd(String),
+    HtmlStart,
+    HtmlEnd(String),
 }
 
 #[derive(Debug)]
@@ -170,6 +173,13 @@ impl StateMachine {
                     self.transition(Event::ColStyle(buffer_string));
                     self.clear_some_buffer(1);
                 }
+                // match a start of html tag
+                else if Regex::new(r"<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>")
+                    .unwrap()
+                    .is_match(&buffer_string)
+                {
+                    self.transition(Event::HtmlStart);
+                }
             }
             State::ReadTableTitle => {
                 // \n
@@ -192,6 +202,11 @@ impl StateMachine {
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
                     self.transition(Event::RowEnd(buffer_string));
                     self.clear_buffer();
+                }
+            }
+            State::ReadHtml => {
+                if Regex::new(r"<\/\s*([a-zA-Z][^\s>]*)\s*>").unwrap().is_match(&buffer_string) {
+                    self.transition(Event::HtmlEnd(buffer_string));
                 }
             }
         }
@@ -237,6 +252,7 @@ impl StateMachine {
             }
 
             // State::ReadCol
+            (State::ReadCol, Event::HtmlStart) => self.state = State::ReadHtml,
             (State::ReadCol, Event::TemplateStart) => self.state = State::ReadTemplate,
             (State::ReadCol, Event::LinkStart) => self.state = State::ReadLink,
             (State::ReadCol, Event::ColStyle(text)) => {
@@ -247,9 +263,14 @@ impl StateMachine {
                 println!("col_text {:?}#", text);
                 self.state = State::ReadTable
             }
-
+            
             // State::ReadLink
             (State::ReadLink, Event::LinkEnd(_)) => self.state = State::ReadCol,
+            
+            //State::ReadHtml
+            (State::ReadHtml, Event::HtmlEnd(_)) => self.state = State::ReadCol,
+            
+            // Else
             (_, _) => {}
         }
     }
