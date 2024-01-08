@@ -135,18 +135,19 @@ impl StateMachine {
                     self.clear_buffer();
                 }
                 // match ||
-                else if Regex::new(r"\|\|$").unwrap().is_match(&buffer_string) {
+                else if Regex::new(r".\|\|$").unwrap().is_match(&buffer_string) {
                     let clean_col_text = Regex::new(r"^(!|\|)|\|\|$")
                         .unwrap()
                         .replace_all(&buffer_string, "")
                         .trim()
                         .to_string();
                     self.transition(Event::ColEnd(clean_col_text));
+                    self.clear_buffer();
                     // match inline sep, should immediatley start
                     self.transition(Event::ColStart);
                 }
                 // match !!
-                else if Regex::new(r"!{2}$").unwrap().is_match(&buffer_string) {
+                else if Regex::new(r".\!\!$").unwrap().is_match(&buffer_string) {
                     let clean_col_text = Regex::new(r"^(!|\|)|\!\!$")
                         .unwrap()
                         .replace_all(&buffer_string, "")
