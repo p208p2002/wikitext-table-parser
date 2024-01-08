@@ -10,7 +10,7 @@ enum State {
     ReadTableTitle,
     ReadCol,
     ReadTableStyle,
-    InsideTable,
+    ReadTable,
     ReadTemplate,
     ReadLink,
     ReadRow
@@ -83,7 +83,7 @@ impl StateMachine {
                     self.clear_buffer();
                 }
             }
-            State::InsideTable => {
+            State::ReadTable => {
                 // match | or || but not (|- or |+ or |`$blank`)}
                 if Regex::new(r"(\|){1,2}[^-\+\s}]$")
                     .unwrap()
@@ -186,29 +186,29 @@ impl StateMachine {
             // State::ReadTableStyle
             (State::ReadTableStyle, Event::ColEnd(text)) => {
                 println!("table_style {}", text);
-                self.state = State::InsideTable
+                self.state = State::ReadTable
             }
 
             // State::ReadTableTitle
             (State::ReadTableTitle, Event::TableTitleEnd(text)) => {
                 println!("table title {}", text);
-                self.state = State::InsideTable
+                self.state = State::ReadTable
             }
 
-            // State::InsideTable
-            (State::InsideTable, Event::TableTitleStart) => self.state = State::ReadTableTitle,
-            (State::InsideTable, Event::ColStart) => self.state = State::ReadCol,
-            (State::InsideTable, Event::TableEnd) => {
+            // State::ReadTable
+            (State::ReadTable, Event::TableTitleStart) => self.state = State::ReadTableTitle,
+            (State::ReadTable, Event::ColStart) => self.state = State::ReadCol,
+            (State::ReadTable, Event::TableEnd) => {
                 self.state = State::Idle;
                 println!("====== TABLE EOF ======")
             }
-            (State::InsideTable, Event::RowStart) => {
+            (State::ReadTable, Event::RowStart) => {
                 self.state = State::ReadRow
             }
 
             // State::ReadRow
             (State::ReadRow,Event::RowEnd(text)) => {
-                self.state = State::InsideTable;
+                self.state = State::ReadTable;
                 println!("----- {:?} -----",text);
             }
 
@@ -226,7 +226,7 @@ impl StateMachine {
             (State::ReadCol, Event::ColEnd(text)) => {
                 // let col_text = text.clone().trim().to_string();
                 println!("col_text {:?}#", text);
-                self.state = State::InsideTable
+                self.state = State::ReadTable
             }
 
             // State::ReadLink
