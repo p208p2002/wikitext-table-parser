@@ -94,7 +94,7 @@ impl StateMachine {
 
             State::ReadTable => {
                 // match | or || but not (|- or |+ or |`$blank`)}
-                if Regex::new(r"(\|){1,2}[^-\+\s}]$")
+                if Regex::new(r"(\|){1,2}[^-\+\s}]$|^\|[^-\+}]$")
                     .unwrap()
                     .is_match(&buffer_string)
                 {
@@ -175,7 +175,7 @@ impl StateMachine {
                     self.clear_some_buffer(1);
                 }
                 // match a start of html tag
-                else if Regex::new(r"<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>")
+                else if Regex::new(r"<[^b\/>][^>]*>")
                     .unwrap()
                     .is_match(&buffer_string)
                 {
@@ -206,7 +206,10 @@ impl StateMachine {
                 }
             }
             State::ReadHtml => {
-                if Regex::new(r"<\/\s*([a-zA-Z][^\s>]*)\s*>").unwrap().is_match(&buffer_string) {
+                if Regex::new(r"<\/\s*([a-zA-Z][^\s>]*)\s*>$")
+                    .unwrap()
+                    .is_match(&buffer_string)
+                {
                     self.transition(Event::HtmlEnd(buffer_string));
                 }
             }
@@ -214,7 +217,7 @@ impl StateMachine {
     }
 
     fn transition(&mut self, event: Event) {
-        // println!("\t\tSTATE: {:?} EVENT: {:?}", self.state, event);
+        // println!("\t\tSTATE: {:?} EVENT: {:?} BF: {:?}", self.state, event,self.char_buffer);
         match (self.state, event) {
             // State::Idle
             (State::Idle, Event::TableStart) => self.state = State::ReadTable,
@@ -264,13 +267,13 @@ impl StateMachine {
                 println!("col_text {:?}#", text);
                 self.state = State::ReadTable
             }
-            
+
             // State::ReadLink
             (State::ReadLink, Event::LinkEnd(_)) => self.state = State::ReadCol,
-            
+
             //State::ReadHtml
             (State::ReadHtml, Event::HtmlEnd(_)) => self.state = State::ReadCol,
-            
+
             // Else
             (_, _) => {}
         }
@@ -298,7 +301,7 @@ fn main() {
     let mut state_machine = StateMachine::new();
 
     for c in content.chars() {
-        // println!("char {:?}",c);
+        // println!("char {:?} state {:?}",c,state_machine.state);
         state_machine.push_buffer(c);
     }
 }
