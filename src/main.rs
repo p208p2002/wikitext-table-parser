@@ -7,18 +7,20 @@ use std::io::Read;
 #[derive(Debug, Clone, Copy)]
 enum State {
     Idle,
+    ReadTable,
+    ReadTableStyle,
     ReadTableTitle,
     ReadCol,
-    ReadTableStyle,
-    ReadTable,
     ReadTemplate,
     ReadLink,
-    ReadRow
+    ReadRow,
 }
 
 #[derive(Debug)]
 enum Event {
     TableStart,
+    TableStyleStart,
+    TableStyleEnd(String),
     TableEnd,
     ColStart,
     ColStyle(String),
@@ -30,7 +32,7 @@ enum Event {
     LinkStart,
     LinkEnd(String),
     RowStart,
-    RowEnd(String)
+    RowEnd(String),
 }
 
 #[derive(Debug)]
@@ -60,7 +62,7 @@ impl StateMachine {
         self.char_buffer.clear();
     }
 
-    fn clear_some_buffer(&mut self,remain:usize){
+    fn clear_some_buffer(&mut self, remain: usize) {
         while self.char_buffer.len() > remain {
             self.char_buffer.remove(0);
         }
@@ -73,16 +75,20 @@ impl StateMachine {
                 // match {|, the sign of table start
                 if Regex::new(r"\{\|").unwrap().is_match(&buffer_string) {
                     self.transition(Event::TableStart);
+                    self.transition(Event::TableStyleStart);
                     self.clear_buffer();
+                } else if self.char_buffer.len() > 2 {
+                    self.char_buffer.remove(0);
                 }
             }
+
             State::ReadTableStyle => {
-                self.transition(Event::ColStart);
-                if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::ColEnd(buffer_string));
+                if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
+                    self.transition(Event::TableStyleEnd(buffer_string));
                     self.clear_buffer();
                 }
             }
+
             State::ReadTable => {
                 // match | or || but not (|- or |+ or |`$blank`)}
                 if Regex::new(r"(\|){1,2}[^-\+\s}]$")
@@ -91,7 +97,7 @@ impl StateMachine {
                 {
                     self.transition(Event::ColStart);
                     // the regex judge with 2 char (look behind),
-                    // so keep 1 char for other condition. 
+                    // so keep 1 char for other condition.
                     self.clear_some_buffer(1);
                 }
                 // match ! or !!}
@@ -117,20 +123,32 @@ impl StateMachine {
             State::ReadCol => {
                 // match \n
                 if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
-                    let clean_col_text = Regex::new(r"^(!|\|)|\n$").unwrap().replace_all(&buffer_string, "").trim().to_string();
+                    let clean_col_text = Regex::new(r"^(!|\|)|\n$")
+                        .unwrap()
+                        .replace_all(&buffer_string, "")
+                        .trim()
+                        .to_string();
                     self.transition(Event::ColEnd(clean_col_text));
                     self.clear_buffer();
                 }
                 // match ||
                 else if Regex::new(r"\|\|$").unwrap().is_match(&buffer_string) {
-                    let clean_col_text = Regex::new(r"^(!|\|)|\|\|$").unwrap().replace_all(&buffer_string, "").trim().to_string();
+                    let clean_col_text = Regex::new(r"^(!|\|)|\|\|$")
+                        .unwrap()
+                        .replace_all(&buffer_string, "")
+                        .trim()
+                        .to_string();
                     self.transition(Event::ColEnd(clean_col_text));
                     // match inline sep, should immediatley start
                     self.transition(Event::ColStart);
                 }
                 // match !!
                 else if Regex::new(r"!{2}$").unwrap().is_match(&buffer_string) {
-                    let clean_col_text = Regex::new(r"^(!|\|)|\!\!$").unwrap().replace_all(&buffer_string, "").trim().to_string();
+                    let clean_col_text = Regex::new(r"^(!|\|)|\!\!$")
+                        .unwrap()
+                        .replace_all(&buffer_string, "")
+                        .trim()
+                        .to_string();
                     self.transition(Event::ColEnd(clean_col_text));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
@@ -144,9 +162,11 @@ impl StateMachine {
                 else if Regex::new(r"\[\[$").unwrap().is_match(&buffer_string) {
                     self.transition(Event::LinkStart);
                 }
-
                 // match `<col_style>|` in col
-                else if Regex::new(r"[^\n]\|[^\|]$").unwrap().is_match(&buffer_string) {
+                else if Regex::new(r"[^\n]\|[^\|]$")
+                    .unwrap()
+                    .is_match(&buffer_string)
+                {
                     self.transition(Event::ColStyle(buffer_string));
                     self.clear_buffer();
                 }
@@ -168,7 +188,7 @@ impl StateMachine {
                     self.transition(Event::LinkEnd(buffer_string));
                 }
             }
-            State::ReadRow =>{
+            State::ReadRow => {
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
                     self.transition(Event::RowEnd(buffer_string));
                     self.clear_buffer();
@@ -181,11 +201,11 @@ impl StateMachine {
         // println!("\t\tSTATE: {:?} EVENT: {:?}", self.state, event);
         match (self.state, event) {
             // State::Idle
-            (State::Idle, Event::TableStart) => self.state = State::ReadTableStyle,
+            (State::Idle, Event::TableStart) => self.state = State::ReadTable,
 
             // State::ReadTableStyle
-            (State::ReadTableStyle, Event::ColEnd(text)) => {
-                println!("table_style {}", text);
+            (State::ReadTableStyle, Event::TableStyleEnd(text)) => {
+                println!("######## table_style {}", text);
                 self.state = State::ReadTable
             }
 
@@ -196,20 +216,19 @@ impl StateMachine {
             }
 
             // State::ReadTable
+            (State::ReadTable, Event::TableStyleStart) => self.state = State::ReadTableStyle,
             (State::ReadTable, Event::TableTitleStart) => self.state = State::ReadTableTitle,
             (State::ReadTable, Event::ColStart) => self.state = State::ReadCol,
             (State::ReadTable, Event::TableEnd) => {
                 self.state = State::Idle;
                 println!("====== TABLE EOF ======")
             }
-            (State::ReadTable, Event::RowStart) => {
-                self.state = State::ReadRow
-            }
+            (State::ReadTable, Event::RowStart) => self.state = State::ReadRow,
 
             // State::ReadRow
-            (State::ReadRow,Event::RowEnd(text)) => {
+            (State::ReadRow, Event::RowEnd(text)) => {
                 self.state = State::ReadTable;
-                println!("----- {:?} -----",text);
+                println!("----- {:?} -----", text);
             }
 
             // State::ReadTemplate
@@ -220,7 +239,7 @@ impl StateMachine {
             // State::ReadCol
             (State::ReadCol, Event::TemplateStart) => self.state = State::ReadTemplate,
             (State::ReadCol, Event::LinkStart) => self.state = State::ReadLink,
-            (State::ReadCol, Event::ColStyle(text))=>{
+            (State::ReadCol, Event::ColStyle(text)) => {
                 // print!("col_style {:?}#",text);
             }
             (State::ReadCol, Event::ColEnd(text)) => {
@@ -262,5 +281,4 @@ fn main() {
         let x = state_machine.get_buffer_string();
         // println!("State->{:?} {:?}",state_machine.state,x);
     }
-
 }
