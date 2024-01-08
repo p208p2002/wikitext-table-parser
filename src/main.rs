@@ -168,7 +168,7 @@ impl StateMachine {
                     .is_match(&buffer_string)
                 {
                     self.transition(Event::ColStyle(buffer_string));
-                    self.clear_buffer();
+                    self.clear_some_buffer(1);
                 }
             }
             State::ReadTableTitle => {
@@ -276,9 +276,7 @@ fn main() {
     let mut state_machine = StateMachine::new();
 
     for c in content.chars() {
-        // println!("\t\t{:}", c);
+        // println!("char {:?}",c);
         state_machine.push_buffer(c);
-        let x = state_machine.get_buffer_string();
-        // println!("State->{:?} {:?}",state_machine.state,x);
     }
 }
