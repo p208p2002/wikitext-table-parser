@@ -59,3 +59,6 @@ fn main() {
     }
 }
 ```
+```bash
+cargo run -r wikitext_tables/1.txt 
+```
