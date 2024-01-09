@@ -17,30 +17,31 @@ enum State {
     ReadHtml,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum Event {
     TableStart,
     TableStyleStart,
-    TableStyleEnd(String),
+    TableStyle(String),
     TableEnd,
     ColStart,
     ColStyle(String),
-    ColEnd(String),
+    Col(String),
     TableTitleStart,
-    TableTitleEnd(String),
+    TableTitle(String),
     TemplateStart,
-    TemplateEnd(String),
+    Template(String),
     LinkStart,
-    LinkEnd(String),
+    Link(String),
     RowStart,
-    RowEnd(String),
+    Row(String),
     HtmlStart,
-    HtmlEnd(String),
+    Html(String),
 }
 
 #[derive(Debug)]
 struct StateMachine {
     state: State,
+    event_log_queue: Vec<Event>,
     char_buffer: Vec<char>,
 }
 
@@ -49,6 +50,7 @@ impl StateMachine {
         StateMachine {
             state: State::Idle,
             char_buffer: Vec::new(),
+            event_log_queue: Vec::new(),
         }
     }
 
@@ -87,7 +89,7 @@ impl StateMachine {
 
             State::ReadTableStyle => {
                 if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::TableStyleEnd(buffer_string));
+                    self.transition(Event::TableStyle(buffer_string));
                     self.clear_buffer();
                 }
             }
@@ -126,13 +128,13 @@ impl StateMachine {
             State::ReadCol => {
                 // match \n| (end of col)
                 if Regex::new(r"\n\|$|\n\!$").unwrap().is_match(&buffer_string) {
-                // if Regex::new(r"(\|[^\|])|(\![^\!])").unwrap().is_match(&buffer_string) {
+                    // if Regex::new(r"(\|[^\|])|(\![^\!])").unwrap().is_match(&buffer_string) {
                     let clean_col_text = Regex::new(r"^(!|\|)|\n$")
                         .unwrap()
                         .replace_all(&buffer_string, "")
                         .trim()
                         .to_string();
-                    self.transition(Event::ColEnd(clean_col_text));
+                    self.transition(Event::Col(clean_col_text));
                     self.clear_some_buffer(1);
                 }
                 // match ||
@@ -142,7 +144,7 @@ impl StateMachine {
                         .replace_all(&buffer_string, "")
                         .trim()
                         .to_string();
-                    self.transition(Event::ColEnd(clean_col_text));
+                    self.transition(Event::Col(clean_col_text));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
                     self.transition(Event::ColStart);
@@ -154,7 +156,7 @@ impl StateMachine {
                         .replace_all(&buffer_string, "")
                         .trim()
                         .to_string();
-                    self.transition(Event::ColEnd(clean_col_text));
+                    self.transition(Event::Col(clean_col_text));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
                     self.transition(Event::ColStart);
@@ -186,23 +188,23 @@ impl StateMachine {
             State::ReadTableTitle => {
                 // \n
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::TableTitleEnd(buffer_string));
+                    self.transition(Event::TableTitle(buffer_string));
                     self.clear_buffer();
                 }
             }
             State::ReadTemplate => {
                 if Regex::new(r"\}\}$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::TemplateEnd(buffer_string));
+                    self.transition(Event::Template(buffer_string));
                 }
             }
             State::ReadLink => {
                 if Regex::new(r"\]\]$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::LinkEnd(buffer_string));
+                    self.transition(Event::Link(buffer_string));
                 }
             }
             State::ReadRow => {
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::RowEnd(buffer_string));
+                    self.transition(Event::Row(buffer_string));
                     self.clear_buffer();
                 }
             }
@@ -211,27 +213,28 @@ impl StateMachine {
                     .unwrap()
                     .is_match(&buffer_string)
                 {
-                    self.transition(Event::HtmlEnd(buffer_string));
+                    self.transition(Event::Html(buffer_string));
                 }
             }
         }
     }
 
     fn transition(&mut self, event: Event) {
+        self.event_log_queue.push(event.clone());
         // println!("\t\tSTATE: {:?} EVENT: {:?} BF: {:?}", self.state, event,self.char_buffer);
         match (self.state, event) {
             // State::Idle
             (State::Idle, Event::TableStart) => self.state = State::ReadTable,
 
             // State::ReadTableStyle
-            (State::ReadTableStyle, Event::TableStyleEnd(text)) => {
-                println!("######## table_style {}", text);
+            (State::ReadTableStyle, Event::TableStyle(text)) => {
+                // println!("######## table_style {}", text);
                 self.state = State::ReadTable
             }
 
             // State::ReadTableTitle
-            (State::ReadTableTitle, Event::TableTitleEnd(text)) => {
-                println!("table title {}", text);
+            (State::ReadTableTitle, Event::TableTitle(text)) => {
+                // println!("table title {}", text);
                 self.state = State::ReadTable
             }
 
@@ -241,18 +244,18 @@ impl StateMachine {
             (State::ReadTable, Event::ColStart) => self.state = State::ReadCol,
             (State::ReadTable, Event::TableEnd) => {
                 self.state = State::Idle;
-                println!("====== TABLE EOF ======")
+                // println!("====== TABLE EOF ======")
             }
             (State::ReadTable, Event::RowStart) => self.state = State::ReadRow,
 
             // State::ReadRow
-            (State::ReadRow, Event::RowEnd(text)) => {
+            (State::ReadRow, Event::Row(text)) => {
                 self.state = State::ReadTable;
-                println!("----- {:?} -----", text);
+                // println!("----- {:?} -----", text);
             }
 
             // State::ReadTemplate
-            (State::ReadTemplate, Event::TemplateEnd(text)) => {
+            (State::ReadTemplate, Event::Template(text)) => {
                 self.state = State::ReadCol;
             }
 
@@ -263,17 +266,17 @@ impl StateMachine {
             (State::ReadCol, Event::ColStyle(text)) => {
                 // print!("col_style {:?}#",text);
             }
-            (State::ReadCol, Event::ColEnd(text)) => {
+            (State::ReadCol, Event::Col(text)) => {
                 // let col_text = text.clone().trim().to_string();
-                println!("col_text {:?}#", text);
+                // println!("col_text {:?}#", text);
                 self.state = State::ReadTable
             }
 
             // State::ReadLink
-            (State::ReadLink, Event::LinkEnd(_)) => self.state = State::ReadCol,
+            (State::ReadLink, Event::Link(_)) => self.state = State::ReadCol,
 
             //State::ReadHtml
-            (State::ReadHtml, Event::HtmlEnd(_)) => self.state = State::ReadCol,
+            (State::ReadHtml, Event::Html(_)) => self.state = State::ReadCol,
 
             // Else
             (_, _) => {}
@@ -302,7 +305,31 @@ fn main() {
     let mut state_machine = StateMachine::new();
 
     for c in content.chars() {
-        // println!("char {:?} state {:?} #",c,state_machine.state);
         state_machine.push_buffer(c);
+        while state_machine.event_log_queue.len() > 0 {
+            let event = state_machine.event_log_queue.remove(0);
+            match event {
+                Event::TableStart => {
+                    println!("Table START!");
+                }
+                Event::TableTitle(text)=>{
+                    println!("table name{:?}#", text);
+                }
+                Event::Row(row_style) => {
+                    println!("\n----- {:?} -----", row_style);
+                }
+                Event::ColStyle(col_style) => {
+                    print!("*{:?}*", col_style);
+                }
+                Event::Col(text) => {
+                    println!("{:?}#", text);
+                }
+                Event::TableEnd => {
+                    println!("Table END!");
+                }
+                _ => {}
+            }
+        }
+        
     }
 }
