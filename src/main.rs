@@ -125,7 +125,7 @@ impl StateMachine {
             }
             State::ReadCol => {
                 // match \n| (end of col)
-                if Regex::new(r"\n\|$").unwrap().is_match(&buffer_string) {
+                if Regex::new(r"\n\|$|\n\!$").unwrap().is_match(&buffer_string) {
                 // if Regex::new(r"(\|[^\|])|(\![^\!])").unwrap().is_match(&buffer_string) {
                     let clean_col_text = Regex::new(r"^(!|\|)|\n$")
                         .unwrap()
