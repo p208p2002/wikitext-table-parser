@@ -94,7 +94,7 @@ impl StateMachine {
 
             State::ReadTable => {
                 // match | or || but not (|- or |+ or |`$blank`)}
-                if Regex::new(r"(\|){1,2}[^-\+\s}]$|^\|[^-\+}]$")
+                if Regex::new(r"(\|){1,2}[^-\+}]$|^\|[^-\+}]$")
                     .unwrap()
                     .is_match(&buffer_string)
                 {
@@ -126,6 +126,7 @@ impl StateMachine {
             State::ReadCol => {
                 // match \n
                 if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
+                // if Regex::new(r"(\|[^\|])|(\![^\!])").unwrap().is_match(&buffer_string) {
                     let clean_col_text = Regex::new(r"^(!|\|)|\n$")
                         .unwrap()
                         .replace_all(&buffer_string, "")
@@ -301,7 +302,7 @@ fn main() {
     let mut state_machine = StateMachine::new();
 
     for c in content.chars() {
-        // println!("char {:?} state {:?}",c,state_machine.state);
+        // println!("char {:?} state {:?} #",c,state_machine.state);
         state_machine.push_buffer(c);
     }
 }
