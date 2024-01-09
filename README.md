@@ -2,7 +2,24 @@
 
 A Rust implement for parse the wikitext's table.
 
-Also see the reference of [wikitext table](https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference).
+### What is this project for ?
+The wikitext is a special format used by wikipedia, most available wiki data or processing tool ignore the table data. This project implement a wikitext-table parser help one to processing the table in wikitext or wiki-dump.
+
+A table in wikitext should like:
+```
+{| class="wikitable"
+|+ Caption text
+|-
+! Header text !! Header text !! Header text
+|-
+| Example || Example || Example
+|-
+| Example || Example || Example
+|-
+| Example || Example || Example
+|}
+```
+> also see the reference of [wikitext table](https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference) for more detail.
 
 ### Usage Example
 ```rust
@@ -59,7 +76,4 @@ fn main() {
         }
     }
 }
-```
-```bash
-cargo run -r wikitext_tables/1.txt 
 ```
