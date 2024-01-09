@@ -1,3 +1,10 @@
+# Wikitext Table Parser
+A Rust implement for parse the wikitext's table.
+
+Also see the reference of [wikitext table](https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference).
+
+### Usage Example
+```rust
 use std::fs::File;
 use std::io::Read;
 use std::env;
@@ -51,3 +58,4 @@ fn main() {
         }
     }
 }
+```

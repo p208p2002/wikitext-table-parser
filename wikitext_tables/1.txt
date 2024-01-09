@@ -1,0 +1,37 @@
+
+{|class="wikitable sortable" style="float: left; margin: 0 0 1em 1em;"
+|+ Seawater elemental composition<br>(salinity = 3.5%) {{citation needed|date=June 2019}}
+|-
+!Element
+!Percent by mass
+|-
+|[[Oxygen]]
+|85.84
+|-
+|[[Hydrogen]]
+|10.82
+|-
+|[[Chlorine]]
+|1.94
+|-
+|[[Sodium]]
+|1.08
+|-
+|[[Magnesium]]
+|0.1292
+|-
+|[[Sulfur]]
+|0.091
+|-
+|[[Calcium]]
+|0.04
+|-
+|[[Potassium]]
+|0.04
+|-
+|[[Bromine]]
+|0.0067
+|-
+|[[Carbon]]
+|0.0028
+|}
