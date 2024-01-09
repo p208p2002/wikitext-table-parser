@@ -10,7 +10,10 @@ documentation = "https://github.com/p208p2002/wikitext-table-parser"
 readme = "README.md"
 homepage = "https://github.com/p208p2002/wikitext-table-parser"
 repository = "https://github.com/p208p2002/wikitext-table-parser"
-
+exclude = [
+    "wikitext_tables/*",
+    "src/main.rs",
+]
 
 [lib]
 name = "wikitext_table_parser"
