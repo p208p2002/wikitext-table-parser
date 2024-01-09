@@ -176,7 +176,7 @@ impl StateMachine {
                     self.clear_some_buffer(1);
                 }
                 // match a start of html tag
-                else if Regex::new(r"<[^b\/>][^>]*>")
+                else if Regex::new(r"<[^b\/>][^>]*>$")
                     .unwrap()
                     .is_match(&buffer_string)
                 {
