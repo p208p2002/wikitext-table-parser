@@ -3,7 +3,7 @@
 A Rust implement for parse the wikitext's table.
 
 ### What is this project for ?
-The wikitext is a special format used by wikipedia, most available wiki data or processing tool ignore the table data. This project implement a wikitext-table parser help one to processing the table in wikitext or wiki-dump.
+The wikitext is a special format used by wikipedia, most available wiki data or processing tool ignore the table data. This project implement a wikitext-table parser that help one to processing the table in wikitext or wiki-dump.
 
 A table in wikitext should like:
 ```
