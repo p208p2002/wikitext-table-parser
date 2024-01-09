@@ -63,7 +63,7 @@ impl WikitextTableParser {
             char_buffer: Vec::new(),
             event_log_queue: Vec::new(),
         };
-        let text = wikitext_table.clone();
+        let text = wikitext_table;
         for c in text.chars(){
             parser.push_buffer(c);
         }
