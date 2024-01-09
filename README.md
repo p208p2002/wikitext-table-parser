@@ -64,7 +64,7 @@ fn main() {
                 println!("----- {:?} -----", row_style);
             }
             ParserEvent::ColStyle(col_style) => {
-                print!("col style: {:?}#", col_style);
+                print!("col style: {:?}# ", col_style);
             }
             ParserEvent::Col(text) => {
                 println!("col: {:?}#", text);

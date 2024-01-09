@@ -1,3 +1,4 @@
+use crate::utils;
 use regex::{self, Regex};
 
 // https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference
@@ -43,32 +44,31 @@ pub struct WikitextTableParser {
     char_buffer: Vec<char>,
 }
 
-impl Iterator for WikitextTableParser{
+impl Iterator for WikitextTableParser {
     type Item = Event;
 
-    fn next(&mut self)->Option<Event>{
-        if self.event_log_queue.len()>0{
+    fn next(&mut self) -> Option<Event> {
+        if self.event_log_queue.len() > 0 {
             let event = self.event_log_queue.remove(0);
             return Some(event);
         }
-        return  None;
+        return None;
     }
 }
 
 impl WikitextTableParser {
-
-    pub fn new(wikitext_table:&str) -> Self {
+    pub fn new(wikitext_table: &str) -> Self {
         let mut parser = WikitextTableParser {
             state: State::Idle,
             char_buffer: Vec::new(),
             event_log_queue: Vec::new(),
         };
         let text = wikitext_table;
-        for c in text.chars(){
+        for c in text.chars() {
             parser.push_buffer(c);
         }
 
-        return  parser;
+        return parser;
     }
 
     fn get_buffer_string(&mut self) -> String {
@@ -106,7 +106,8 @@ impl WikitextTableParser {
 
             State::ReadTableStyle => {
                 if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::TableStyle(buffer_string));
+                    let clean_col_text = utils::clean_col_text(&buffer_string);
+                    self.transition(Event::TableStyle(clean_col_text));
                     self.clear_buffer();
                 }
             }
@@ -145,22 +146,13 @@ impl WikitextTableParser {
             State::ReadCol => {
                 // match \n| (end of col)
                 if Regex::new(r"\n\|$|\n\!$").unwrap().is_match(&buffer_string) {
-                    // if Regex::new(r"(\|[^\|])|(\![^\!])").unwrap().is_match(&buffer_string) {
-                    let clean_col_text = Regex::new(r"^(!|\|)|\n$")
-                        .unwrap()
-                        .replace_all(&buffer_string, "")
-                        .trim()
-                        .to_string();
+                    let clean_col_text = utils::clean_col_text(&buffer_string);
                     self.transition(Event::Col(clean_col_text));
                     self.clear_some_buffer(1);
                 }
                 // match ||
                 else if Regex::new(r".\|\|$").unwrap().is_match(&buffer_string) {
-                    let clean_col_text = Regex::new(r"^(!|\|)|\|\|$")
-                        .unwrap()
-                        .replace_all(&buffer_string, "")
-                        .trim()
-                        .to_string();
+                    let clean_col_text = utils::clean_col_text(&buffer_string);
                     self.transition(Event::Col(clean_col_text));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
@@ -168,11 +160,7 @@ impl WikitextTableParser {
                 }
                 // match !!
                 else if Regex::new(r".\!\!$").unwrap().is_match(&buffer_string) {
-                    let clean_col_text = Regex::new(r"^(!|\|)|\!\!$")
-                        .unwrap()
-                        .replace_all(&buffer_string, "")
-                        .trim()
-                        .to_string();
+                    let clean_col_text = utils::clean_col_text(&buffer_string);
                     self.transition(Event::Col(clean_col_text));
                     self.clear_buffer();
                     // match inline sep, should immediatley start
@@ -191,7 +179,8 @@ impl WikitextTableParser {
                     .unwrap()
                     .is_match(&buffer_string)
                 {
-                    self.transition(Event::ColStyle(buffer_string));
+                    let clean_col_text = utils::clean_col_text(&buffer_string);
+                    self.transition(Event::ColStyle(clean_col_text));
                     self.clear_some_buffer(1);
                 }
                 // match a start of html tag
@@ -221,7 +210,8 @@ impl WikitextTableParser {
             }
             State::ReadRow => {
                 if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-                    self.transition(Event::Row(buffer_string));
+                    let clean_col_text = utils::clean_col_text(&buffer_string);
+                    self.transition(Event::Row(clean_col_text));
                     self.clear_buffer();
                 }
             }

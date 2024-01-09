@@ -1,0 +1,34 @@
+
+{| class="wikitable"
+|-
+! scope="col" | 队伍
+! scope="col" | 联盟
+! scope="col" | 运动
+! scope="col" | 主场
+! scope="col" | 成立年份
+|-
+! scope="row" style="font-weight: normal; text-align: center;" | [[上海申花]]
+| [[中国足球超级联赛]]（CSL）
+| 足球
+|[[虹口足球场]]
+| 1951年
+|-
+! scope="row" style="font-weight: normal; text-align: center;" | [[上海大鲨鱼]]
+|[[中国篮球职业联赛]]（CBA）
+|篮球
+|[[源深体育中心]]
+|1996年
+|-
+![[上海海港]]
+|[[中国足球超级联赛]]（CSL）
+|足球
+| [[上海体育场]]
+|2005年
+|-
+![[上海龙之队|上海龙]]
+|[[守望先锋联赛]]（OWL）
+|守望先锋
+| --
+|2017年
+|-
+|}
