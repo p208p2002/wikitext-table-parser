@@ -227,16 +227,10 @@ impl StateMachine {
             (State::Idle, Event::TableStart) => self.state = State::ReadTable,
 
             // State::ReadTableStyle
-            (State::ReadTableStyle, Event::TableStyle(text)) => {
-                // println!("######## table_style {}", text);
-                self.state = State::ReadTable
-            }
+            (State::ReadTableStyle, Event::TableStyle(_)) => self.state = State::ReadTable,
 
             // State::ReadTableTitle
-            (State::ReadTableTitle, Event::TableTitle(text)) => {
-                // println!("table title {}", text);
-                self.state = State::ReadTable
-            }
+            (State::ReadTableTitle, Event::TableTitle(_)) => self.state = State::ReadTable,
 
             // State::ReadTable
             (State::ReadTable, Event::TableStyleStart) => self.state = State::ReadTableStyle,
@@ -244,18 +238,16 @@ impl StateMachine {
             (State::ReadTable, Event::ColStart) => self.state = State::ReadCol,
             (State::ReadTable, Event::TableEnd) => {
                 self.state = State::Idle;
-                // println!("====== TABLE EOF ======")
             }
             (State::ReadTable, Event::RowStart) => self.state = State::ReadRow,
 
             // State::ReadRow
-            (State::ReadRow, Event::Row(text)) => {
+            (State::ReadRow, Event::Row(_)) => {
                 self.state = State::ReadTable;
-                // println!("----- {:?} -----", text);
             }
 
             // State::ReadTemplate
-            (State::ReadTemplate, Event::Template(text)) => {
+            (State::ReadTemplate, Event::Template(_)) => {
                 self.state = State::ReadCol;
             }
 
@@ -263,14 +255,8 @@ impl StateMachine {
             (State::ReadCol, Event::HtmlStart) => self.state = State::ReadHtml,
             (State::ReadCol, Event::TemplateStart) => self.state = State::ReadTemplate,
             (State::ReadCol, Event::LinkStart) => self.state = State::ReadLink,
-            (State::ReadCol, Event::ColStyle(text)) => {
-                // print!("col_style {:?}#",text);
-            }
-            (State::ReadCol, Event::Col(text)) => {
-                // let col_text = text.clone().trim().to_string();
-                // println!("col_text {:?}#", text);
-                self.state = State::ReadTable
-            }
+            (State::ReadCol, Event::ColStyle(_)) => {}
+            (State::ReadCol, Event::Col(_)) => self.state = State::ReadTable,
 
             // State::ReadLink
             (State::ReadLink, Event::Link(_)) => self.state = State::ReadCol,
@@ -312,7 +298,10 @@ fn main() {
                 Event::TableStart => {
                     println!("Table START!");
                 }
-                Event::TableTitle(text)=>{
+                Event::TableStyle(table_style) => {
+                    println!("table style{:?}#", table_style);
+                }
+                Event::TableTitle(text) => {
                     println!("table name{:?}#", text);
                 }
                 Event::Row(row_style) => {
@@ -330,6 +319,5 @@ fn main() {
                 _ => {}
             }
         }
-        
     }
 }
