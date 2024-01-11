@@ -7,7 +7,7 @@ pub struct TokenParseTreeNode {
     children: HashMap<char, TokenParseTreeNode>,
 }
 
-pub struct StreamTokenizer {
+pub struct Tokenizer {
     token_tree: TokenParseTreeNode,
 }
 
@@ -24,7 +24,7 @@ impl fmt::Display for TokenParseTreeNode {
     }
 }
 
-impl StreamTokenizer {
+impl Tokenizer {
     pub fn build() -> Self {
         let special_tokens = ["||", "|", "|-", "|+", "{|", "|}"];
 
@@ -64,7 +64,7 @@ impl StreamTokenizer {
         }
         // println!("----------");
         // println!("{:}", root_node);
-        return StreamTokenizer {
+        return Tokenizer {
             token_tree: root_node,
         };
     }
@@ -80,7 +80,6 @@ impl StreamTokenizer {
                 Some(_) => {
                     node = node.children.get(&t_char).unwrap();
                     tmp = tmp + &node.val.to_string();
-
                 }
                 None => {
                     if tmp != "" {

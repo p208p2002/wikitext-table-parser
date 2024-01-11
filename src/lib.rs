@@ -5,16 +5,13 @@ pub mod tokenizer;
 #[cfg(test)]
 mod test_tokenizer {
     use crate::tokenizer;
-
-    // #[test]
-    // fn build_tokenizer() {
-    //     tokenizer::StreamTokenizer::build();
-    // }
-
+    
     #[test]
     fn tokenize(){
         let raw_string = String::from("{|123|||}");
-        let tokenizer = tokenizer::StreamTokenizer::build();
-        tokenizer.tokenize(&raw_string);
+        let expect_result = Vec::from(["{|","1","2","3","||","|}"]);
+        let tokenizer = tokenizer::Tokenizer::build();
+        let out = tokenizer.tokenize(&raw_string);
+        assert_eq!(out.join(" / "),expect_result.join(" / "));
     }
 }
