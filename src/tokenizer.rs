@@ -110,7 +110,7 @@ impl Tokenizer {
             out.push(tmp);
         }
 
-        println!("{:?}", out);
+        // println!("{:?}", out);
         return out;
     }
 }
