@@ -1,0 +1,75 @@
+
+{| class="sortable wikitable" border="1" style="text-align:right"
+|+ 各縣市災損統計 <ref>{{cite web |url=http://statdb.cla.gov.tw/html/com/h0934.htm |language=zh-tw |title=921震災勞動情勢分析新聞稿 |publisher=行政院勞委會 |date=1999-10-18 |accessdate=2013-03-30 |deadurl=yes |archiveurl=https://web.archive.org/web/20130606125803/http://statdb.cla.gov.tw/html/com/h0934.htm |archivedate=2013-06-06 }}</ref><ref name="cdc">{{cite web |url=http://www.cdc.gov.tw/info.aspx?treeid=075874dc882a5bfd&nowtreeid=875e420d705a97d9&tid=54D49B26AD3AD314 |language=zh-tw |title=九二一集集大地震南投縣台中縣死亡情形調查報告，《疫情報導》 |author=韓世寧、陳國東 |publisher=衛生署疾病管制局 |date=2000-01-25 |accessdate=2013-03-31 |archive-url=https://web.archive.org/web/20160304111329/http://www.cdc.gov.tw/info.aspx?treeid=075874dc882a5bfd&nowtreeid=875e420d705a97d9&tid=54D49B26AD3AD314 |archive-date=2016-03-04 |dead-url=yes }}</ref><ref name="傷亡-2"/>
+! 縣市別
+! 死亡人數
+! 重傷人數
+! 全倒戶數
+! 半倒戶數
+|-
+|南投縣
+|886
+|678
+|23,127
+|16,792
+|-
+|臺中縣
+|1,154
+|411
+|16,861
+|12,341
+|-
+|臺中市
+|113
+|47
+|1,484
+|4,953
+|-
+|彰化縣
+|29
+|11
+|1,048
+|3,054
+|-
+|雲林縣
+|85
+|60
+|916
+|321
+|-
+|嘉義縣
+|6
+|0
+|30
+|91
+|-
+|台南縣
+|1
+|0
+|1
+|1
+|-
+|臺北市
+|87
+|7
+|76
+|325
+|-
+|臺北縣
+|46
+|29
+|230
+|3,264
+|-
+|苗栗縣
+|6
+|196
+|529
+|473
+|-
+|新竹市
+|2
+|1
+|5
+|0
+|}
