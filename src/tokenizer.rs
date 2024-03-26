@@ -1,5 +1,42 @@
 use core::fmt;
 use std::collections::HashMap;
+use std::str::FromStr;
+use strum_macros::EnumString;
+use strum_macros::AsRefStr;
+
+
+#[derive(Debug, PartialEq, EnumString,AsRefStr)]
+enum SpecailTokens {
+    #[strum(serialize = "{|")]
+    TableStart,
+
+    #[strum(serialize = "|+")]
+    TableCaption,
+
+    #[strum(serialize = "|-")]
+    TableRow,
+
+    #[strum(serialize = "!")]
+    TableHeaderCell,
+
+    #[strum(serialize="!!")]
+    TableHeaderCell2,
+
+    #[strum(serialize = "|")]
+    TableDataCell,
+
+    #[strum(serialize="||")]
+    TableDataCell2,
+
+    #[strum(serialize = "|}")]
+    TableEnd,
+
+    #[strum(serialize = "<nowiki>")]
+    NoWikiStart,
+
+    #[strum(serialize = "</nowiki>")]
+    NoWikiEnd,
+}
 
 #[derive(Debug, Clone)]
 pub struct TokenParseTreeNode {
@@ -26,7 +63,18 @@ impl fmt::Display for TokenParseTreeNode {
 
 impl Tokenizer {
     pub fn build() -> Self {
-        let special_tokens = ["||", "|", "|-", "|+", "{|", "|}"];
+        let special_tokens = [
+            SpecailTokens::TableStart.as_ref(),
+            SpecailTokens::TableEnd.as_ref(),
+            SpecailTokens::TableCaption.as_ref(),
+            SpecailTokens::TableDataCell.as_ref(),
+            SpecailTokens::TableDataCell2.as_ref(),
+            SpecailTokens::TableRow.as_ref(),
+            SpecailTokens::TableHeaderCell.as_ref(),
+            SpecailTokens::TableHeaderCell2.as_ref(),
+            SpecailTokens::NoWikiStart.as_ref(),
+            SpecailTokens::NoWikiEnd.as_ref()
+        ];
 
         let mut root_node = TokenParseTreeNode {
             val: '$', // a root's val is unused

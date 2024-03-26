@@ -8,8 +8,8 @@ mod test_tokenizer {
 
     #[test]
     fn tokenize() {
-        let raw_string = String::from("{|123|||}");
-        let expect_result = Vec::from(["{|", "1", "2", "3", "||", "|}"]);
+        let raw_string = String::from("{|123|||}<><nowiki>");
+        let expect_result = Vec::from(["{|", "1", "2", "3", "||", "|}","<",">","<nowiki>"]);
         let tokenizer = tokenizer::Tokenizer::build();
         let out = tokenizer.tokenize(&raw_string);
         assert_eq!(out.join(" / "), expect_result.join(" / "));
