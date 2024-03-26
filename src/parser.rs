@@ -148,6 +148,9 @@ impl WikitextTableParser {
                     self.transition(Event::Row(String::from("dummy row style")));
                     self.transition(Event::ColStart);
                 }
+                else if &token == SpecailTokens::TableEnd.as_ref() {
+                    self.transition(Event::TableEnd);
+                }
             }
 
             State::ReadCol => {
