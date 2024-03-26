@@ -9,7 +9,7 @@ pub enum State {
     Idle,
     ReadTable,
     ReadTableStyle,
-    ReadTableTitle,
+    ReadTableCaption,
     ReadCol,
     ReadTemplate,
     ReadLink,
@@ -116,7 +116,7 @@ impl WikitextTableParser {
                     self.transition(Event::TableEnd);
                 }
             }
-            State::ReadTableTitle => {
+            State::ReadTableCaption => {
                 self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableRow.as_ref() {
                     self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
@@ -263,7 +263,7 @@ impl WikitextTableParser {
         //         self.transition(Event::HtmlStart);
         //     }
         // }
-        // State::ReadTableTitle => {
+        // State::ReadTableCaption => {
         //     // \n
         //     if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
         //         self.transition(Event::TableCaptionEnd(buffer_string));
@@ -309,12 +309,12 @@ impl WikitextTableParser {
             // State::ReadTableStyle
             (State::ReadTableStyle, Event::TableStyleEnd(_)) => self.state = State::ReadTable,
 
-            // State::ReadTableTitle
-            (State::ReadTableTitle, Event::TableCaptionEnd(_)) => self.state = State::ReadTable,
+            // State::ReadTableCaption
+            (State::ReadTableCaption, Event::TableCaptionEnd(_)) => self.state = State::ReadTable,
 
             // State::ReadTable
             (State::ReadTable, Event::TableStyleStart) => self.state = State::ReadTableStyle,
-            (State::ReadTable, Event::TableCaptionStart) => self.state = State::ReadTableTitle,
+            (State::ReadTable, Event::TableCaptionStart) => self.state = State::ReadTableCaption,
             // (State::ReadTable, Event::ColStart) => self.state = State::ReadCol,
             (State::ReadTable, Event::TableEnd) => {
                 self.state = State::Idle;
