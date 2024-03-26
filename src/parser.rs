@@ -21,7 +21,7 @@ pub enum State {
 pub enum Event {
     TableStart,
     TableStyleStart,
-    TableStyle(String),
+    TableStyleEnd(String),
     TableEnd,
     ColStart,
     ColStyle(String),
@@ -179,7 +179,7 @@ impl WikitextTableParser {
         // State::ReadTableStyle => {
         //     if Regex::new(r"\n$").unwrap().is_match(&buffer_string) {
         //         let clean_col_text = utils::clean_col_text(&buffer_string);
-        //         self.transition(Event::TableStyle(clean_col_text));
+        //         self.transition(Event::TableStyleEnd(clean_col_text));
         //         self.clear_buffer();
         //     }
         // }
@@ -307,7 +307,7 @@ impl WikitextTableParser {
             (State::Idle, Event::TableStart) => self.state = State::ReadTable,
 
             // State::ReadTableStyle
-            (State::ReadTableStyle, Event::TableStyle(_)) => self.state = State::ReadTable,
+            (State::ReadTableStyle, Event::TableStyleEnd(_)) => self.state = State::ReadTable,
 
             // State::ReadTableTitle
             (State::ReadTableTitle, Event::TableCaptionEnd(_)) => self.state = State::ReadTable,
