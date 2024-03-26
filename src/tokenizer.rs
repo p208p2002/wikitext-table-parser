@@ -7,29 +7,29 @@ use strum_macros::AsRefStr;
 // Wiki wable special token markup definition 
 // https://en.wikipedia.org/wiki/Help:Table#Basic_table_markup
 #[derive(Debug, PartialEq, EnumString,AsRefStr)]
-enum SpecailTokens {
-    #[strum(serialize = "{|")]
+pub enum SpecailTokens {
+    #[strum(serialize = "\n{|")]
     TableStart,
 
-    #[strum(serialize = "|+")]
+    #[strum(serialize = "\n|+")]
     TableCaption,
 
-    #[strum(serialize = "|-")]
+    #[strum(serialize = "\n|-")]
     TableRow,
 
-    #[strum(serialize = "!")]
+    #[strum(serialize = "\n!")]
     TableHeaderCell,
 
     #[strum(serialize="!!")]
     TableHeaderCell2,
 
-    #[strum(serialize = "|")]
+    #[strum(serialize = "\n|")]
     TableDataCell,
 
     #[strum(serialize="||")]
     TableDataCell2,
 
-    #[strum(serialize = "|}")]
+    #[strum(serialize = "\n|}")]
     TableEnd,
 
     #[strum(serialize = "<nowiki>")]
