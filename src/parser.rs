@@ -26,8 +26,8 @@ pub enum Event {
     ColStart,
     ColStyle(String),
     Col(String),
-    TableTitleStart,
-    TableTitle(String),
+    TableCaptionStart,
+    TableCaptionEnd(String),
     TemplateStart,
     Template(String),
     LinkStart,
@@ -107,14 +107,10 @@ impl WikitextTableParser {
             }
             State::ReadTable => {
                 if &token == SpecailTokens::TableCaption.as_ref() {
-                    self.transition(Event::TableTitleStart);
-                }
-
-                else if &token ==SpecailTokens::TableRow.as_ref() {
+                    self.transition(Event::TableCaptionStart);
+                } else if &token == SpecailTokens::TableRow.as_ref() {
                     self.transition(Event::RowStart);
-
                 }
-
                 // end of table
                 else if &token == SpecailTokens::TableEnd.as_ref() {
                     self.transition(Event::TableEnd);
@@ -123,17 +119,16 @@ impl WikitextTableParser {
             State::ReadTableTitle => {
                 self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableRow.as_ref() {
-                    self.transition(Event::TableTitle(self.text_buffer.clone()));
+                    self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref() {
-                    self.transition(Event::TableTitle(self.text_buffer.clone()));
+                    self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                     self.transition(Event::Row(String::from("dummy row style")));
                     self.transition(Event::ColStart);
                 }
-
             }
 
             State::ReadRow => {
@@ -147,8 +142,7 @@ impl WikitextTableParser {
                 {
                     self.transition(Event::Row(String::from("dummy row style")));
                     self.transition(Event::ColStart);
-                }
-                else if &token == SpecailTokens::TableEnd.as_ref() {
+                } else if &token == SpecailTokens::TableEnd.as_ref() {
                     self.transition(Event::TableEnd);
                 }
             }
@@ -207,7 +201,7 @@ impl WikitextTableParser {
         //     }
         //     // table title |+
         //     else if Regex::new(r"\|\+").unwrap().is_match(&buffer_string) {
-        //         self.transition(Event::TableTitleStart);
+        //         self.transition(Event::TableCaptionStart);
         //         self.clear_buffer();
         //     }
         //     // row sep |-
@@ -272,7 +266,7 @@ impl WikitextTableParser {
         // State::ReadTableTitle => {
         //     // \n
         //     if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
-        //         self.transition(Event::TableTitle(buffer_string));
+        //         self.transition(Event::TableCaptionEnd(buffer_string));
         //         self.clear_buffer();
         //     }
         // }
@@ -316,11 +310,11 @@ impl WikitextTableParser {
             (State::ReadTableStyle, Event::TableStyle(_)) => self.state = State::ReadTable,
 
             // State::ReadTableTitle
-            (State::ReadTableTitle, Event::TableTitle(_)) => self.state = State::ReadTable,
+            (State::ReadTableTitle, Event::TableCaptionEnd(_)) => self.state = State::ReadTable,
 
             // State::ReadTable
             (State::ReadTable, Event::TableStyleStart) => self.state = State::ReadTableStyle,
-            (State::ReadTable, Event::TableTitleStart) => self.state = State::ReadTableTitle,
+            (State::ReadTable, Event::TableCaptionStart) => self.state = State::ReadTableTitle,
             // (State::ReadTable, Event::ColStart) => self.state = State::ReadCol,
             (State::ReadTable, Event::TableEnd) => {
                 self.state = State::Idle;

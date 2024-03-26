@@ -1,6 +1,6 @@
+use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::env;
 use wikitext_table_parser::parser::{Event as ParserEvent, WikitextTableParser};
 
 fn main() {
@@ -32,7 +32,7 @@ fn main() {
             ParserEvent::TableStyle(table_style) => {
                 println!("table style{:?}#", table_style);
             }
-            ParserEvent::TableTitle(text) => {
+            ParserEvent::TableCaptionEnd(text) => {
                 println!("table name{:?}#", text);
             }
             ParserEvent::Row(row_style) => {
