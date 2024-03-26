@@ -40,6 +40,8 @@ mod test_parser {
         //
         let mut count_rows = 0;
         let mut count_cols = 0;
+        let mut count_table_start = 0;
+        let mut count_table_end = 0;
 
         let wikitext_table_parser = WikitextTableParser::new(&content);
         for event in wikitext_table_parser {
@@ -58,10 +60,18 @@ mod test_parser {
                     count_cols += 1;
                     println!("col: {:?}#", text);
                 }
+                ParserEvent::TableStart =>{
+                    count_table_start += 1
+                }
+                ParserEvent::TableEnd =>{
+                    count_table_end += 1
+                }
                 _ => {}
             }
         }
-        assert_eq!(expect_rows, count_rows)
+        assert_eq!(expect_rows, count_rows);
+        assert_eq!(1,count_table_start);
+        assert_eq!(1,count_table_end)
     }
 
     #[test]
