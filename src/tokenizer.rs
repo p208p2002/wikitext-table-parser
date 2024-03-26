@@ -4,7 +4,8 @@ use std::str::FromStr;
 use strum_macros::EnumString;
 use strum_macros::AsRefStr;
 
-
+// Wiki wable special token markup definition 
+// https://en.wikipedia.org/wiki/Help:Table#Basic_table_markup
 #[derive(Debug, PartialEq, EnumString,AsRefStr)]
 enum SpecailTokens {
     #[strum(serialize = "{|")]
