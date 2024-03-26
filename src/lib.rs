@@ -88,4 +88,9 @@ mod test_parser {
     fn test_parse_struct_table_3() {
         test_parse_struct_table(String::from("wikitext_tables/3.txt"), 12, 5)
     }
+
+    #[test]
+    fn test_parse_struct_table_4() {
+        test_parse_struct_table(String::from("wikitext_tables/4.txt"), 8, 5)
+    }
 }
