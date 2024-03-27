@@ -24,7 +24,7 @@ pub enum Event {
     ColStyle(String),
     Col(String),
     TableCaptionStart,
-    TableCaptionEnd(String),
+    TableCaption(String),
     RowStart,
     RowStyle(String),
 }
@@ -81,7 +81,7 @@ impl WikitextTableParser {
         self.text_buffer = String::from("")
     }
 
-    fn get_text_buffer_data(&self)->String{
+    fn get_text_buffer_data(&self) -> String {
         return self.text_buffer.clone().trim().to_string();
     }
 
@@ -113,14 +113,14 @@ impl WikitextTableParser {
             State::ReadTableCaption => {
                 self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableRow.as_ref() {
-                    self.transition(Event::TableCaptionEnd(self.get_text_buffer_data()));
+                    self.transition(Event::TableCaption(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 }
                 // match ! after the caption, this type will not have a row style
                 // and should turn in to read col state
                 else if &token == SpecailTokens::TableHeaderCell.as_ref() {
-                    self.transition(Event::TableCaptionEnd(self.get_text_buffer_data()));
+                    self.transition(Event::TableCaption(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     // even we do not read the `|-` (row start token)
                     // we still send the read row event,
@@ -187,7 +187,7 @@ impl WikitextTableParser {
             (State::Idle, Event::TableStart) => self.state = State::ReadTable,
 
             // State::ReadTableCaption
-            (State::ReadTableCaption, Event::TableCaptionEnd(_)) => self.state = State::ReadTable,
+            (State::ReadTableCaption, Event::TableCaption(_)) => self.state = State::ReadTable,
 
             // State::ReadTable
             (State::ReadTable, Event::TableCaptionStart) => self.state = State::ReadTableCaption,
