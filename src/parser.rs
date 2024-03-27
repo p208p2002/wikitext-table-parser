@@ -28,14 +28,8 @@ pub enum Event {
     Col(String),
     TableCaptionStart,
     TableCaptionEnd(String),
-    TemplateStart,
-    Template(String),
-    LinkStart,
-    Link(String),
     RowStart,
     Row(String),
-    HtmlStart,
-    Html(String),
 }
 
 #[derive(Debug)]
@@ -324,24 +318,11 @@ impl WikitextTableParser {
             // State::ReadRow
             (State::ReadRow, Event::ColStart) => self.state = State::ReadCol,
 
-            // State::ReadTemplate
-            (State::ReadTemplate, Event::Template(_)) => {
-                self.state = State::ReadCol;
-            }
-
             // State::ReadCol
-            (State::ReadCol, Event::HtmlStart) => self.state = State::ReadHtml,
-            (State::ReadCol, Event::TemplateStart) => self.state = State::ReadTemplate,
-            (State::ReadCol, Event::LinkStart) => self.state = State::ReadLink,
             (State::ReadCol, Event::ColStyle(_)) => {}
             (State::ReadCol, Event::Col(_)) => self.state = State::ReadCol,
             (State::ReadCol, Event::RowStart) => self.state = State::ReadRow,
 
-            // State::ReadLink
-            (State::ReadLink, Event::Link(_)) => self.state = State::ReadCol,
-
-            //State::ReadHtml
-            (State::ReadHtml, Event::Html(_)) => self.state = State::ReadCol,
 
             // Else
             (_, _) => {}
