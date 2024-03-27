@@ -29,7 +29,7 @@ fn main() {
             ParserEvent::TableStart => {
                 println!("Table START!");
             }
-            ParserEvent::TableStyleEnd(table_style) => {
+            ParserEvent::TableStyle(table_style) => {
                 println!("table style{:?}#", table_style);
             }
             ParserEvent::TableCaptionEnd(text) => {
