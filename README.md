@@ -21,7 +21,18 @@ A table in wikitext should like:
 ```
 > also see the reference of [wikitext table](https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference) for more detail.
 
+### Usage
+```toml
+[dependencies]
+wikitext_table_parser = "0.2.2"
+```
+
 ### Usage Example
+
+Note that for current version and limitaion of the tokenizer, the parser only recognize a table which start from `\n{|`.
+
+If table start from `{|` but **no** `\n` as it's prefix, will not trigger `Event::TableStart`.
+
 ```rust
 use std::fs::File;
 use std::io::Read;
