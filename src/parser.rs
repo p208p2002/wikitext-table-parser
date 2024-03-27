@@ -62,6 +62,8 @@ impl WikitextTableParser {
             event_log_queue: Vec::new(),
             text_buffer: String::from(""),
         };
+
+        // println!("{:?}",parser.tokens);
         return parser;
     }
 
@@ -162,7 +164,7 @@ impl WikitextTableParser {
                     self.clear_text_buffer();
                 // match ! or !!
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref()
-                    || &token == SpecailTokens::TableDataCell2.as_ref()
+                    || &token == SpecailTokens::TableHeaderCell2.as_ref()
                 {
                     self.transition(Event::Col(self.get_text_buffer_data()));
                     self.clear_text_buffer();
