@@ -82,7 +82,7 @@ impl Tokenizer {
         };
 
         for token in special_tokens {
-            println!("Token:{}", token);
+            // println!("Token:{}", token);
 
             let mut node = &mut root_node;
             for t_char in token.chars() {
@@ -91,7 +91,7 @@ impl Tokenizer {
                         // if a value is alirady in children
                         // forward the node to the child.
                         node = node.children.get_mut(&t_char).unwrap();
-                        println!("\t exist:  {}", t_char);
+                        // println!("\t exist:  {}", t_char);
                     }
                     None => {
                         // finally we reach the bottom of the tree branch,
@@ -104,7 +104,7 @@ impl Tokenizer {
                             },
                         );
                         node = node.children.get_mut(&t_char).unwrap();
-                        println!("\t insert: {}", t_char);
+                        // println!("\t insert: {}", t_char);
                     }
                 }
             }
