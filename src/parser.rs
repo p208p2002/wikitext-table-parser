@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::tokenizer;
 use crate::tokenizer::SpecailTokens;
 // use regex::{self, Regex};
@@ -64,11 +66,23 @@ impl WikitextTableParser {
     }
 
     fn append_to_text_buffer(&mut self, s: &str) {
-        self.text_buffer += s;
+        let token = SpecailTokens::from_str(s);
+        match token {
+            Ok(_) => {
+                // do nothing if is a special token
+            }
+            Err(_) => {
+                self.text_buffer += s;
+            }
+        }
     }
 
     fn clear_text_buffer(&mut self) {
         self.text_buffer = String::from("")
+    }
+
+    fn get_text_buffer_data(&self)->String{
+        return self.text_buffer.clone().trim().to_string();
     }
 
     fn step(&mut self) {
@@ -82,11 +96,11 @@ impl WikitextTableParser {
             State::ReadTable => {
                 self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableCaption.as_ref() {
-                    self.transition(Event::TableStyle(self.text_buffer.clone()));
+                    self.transition(Event::TableStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::TableCaptionStart);
                 } else if &token == SpecailTokens::TableRow.as_ref() {
-                    self.transition(Event::TableStyle(self.text_buffer.clone()));
+                    self.transition(Event::TableStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 }
@@ -99,14 +113,14 @@ impl WikitextTableParser {
             State::ReadTableCaption => {
                 self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableRow.as_ref() {
-                    self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
+                    self.transition(Event::TableCaptionEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 }
                 // match ! after the caption, this type will not have a row style
                 // and should turn in to read col state
                 else if &token == SpecailTokens::TableHeaderCell.as_ref() {
-                    self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
+                    self.transition(Event::TableCaptionEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     // even we do not read the `|-` (row start token)
                     // we still send the read row event,
@@ -122,13 +136,13 @@ impl WikitextTableParser {
                 if &token == SpecailTokens::TableDataCell.as_ref()
                     || &token == SpecailTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::RowStyle(self.text_buffer.clone()));
+                    self.transition(Event::RowStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::ColStart);
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref()
                     || &token == SpecailTokens::TableHeaderCell2.as_ref()
                 {
-                    self.transition(Event::RowStyle(self.text_buffer.clone()));
+                    self.transition(Event::RowStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::ColStart);
                 } else if &token == SpecailTokens::TableEnd.as_ref() {
@@ -144,20 +158,20 @@ impl WikitextTableParser {
                 if &token == SpecailTokens::TableDataCell.as_ref()
                     || &token == SpecailTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::Col(self.text_buffer.clone()));
+                    self.transition(Event::Col(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                 // match ! or !!
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref()
                     || &token == SpecailTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::Col(self.text_buffer.clone()));
+                    self.transition(Event::Col(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                 } else if &token == SpecailTokens::TableRow.as_ref() {
-                    self.transition(Event::Col(self.text_buffer.clone()));
+                    self.transition(Event::Col(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 } else if &token == SpecailTokens::TableEnd.as_ref() {
-                    self.transition(Event::Col(self.text_buffer.clone()));
+                    self.transition(Event::Col(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::TableEnd);
                 }
