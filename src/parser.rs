@@ -22,11 +22,12 @@ pub enum Event {
     TableEnd,
     ColStart,
     ColStyle(String),
-    Col(String),
+    ColEnd(String),
     TableCaptionStart,
     TableCaption(String),
     RowStart,
     RowStyle(String),
+    RowEnd,
 }
 
 #[derive(Debug)]
@@ -148,6 +149,7 @@ impl WikitextTableParser {
                     self.clear_text_buffer();
                     self.transition(Event::ColStart);
                 } else if &token == SpecailTokens::TableEnd.as_ref() {
+                    self.transition(Event::RowEnd);
                     self.transition(Event::TableEnd);
                     self.clear_text_buffer();
                 }
@@ -160,21 +162,23 @@ impl WikitextTableParser {
                 if &token == SpecailTokens::TableDataCell.as_ref()
                     || &token == SpecailTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::Col(self.get_text_buffer_data()));
+                    self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                 // match ! or !!
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref()
                     || &token == SpecailTokens::TableHeaderCell2.as_ref()
                 {
-                    self.transition(Event::Col(self.get_text_buffer_data()));
+                    self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                 } else if &token == SpecailTokens::TableRow.as_ref() {
-                    self.transition(Event::Col(self.get_text_buffer_data()));
+                    self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
+                    self.transition(Event::RowEnd);
                     self.transition(Event::RowStart);
                 } else if &token == SpecailTokens::TableEnd.as_ref() {
-                    self.transition(Event::Col(self.get_text_buffer_data()));
+                    self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
+                    self.transition(Event::RowEnd);
                     self.transition(Event::TableEnd);
                 }
             }
@@ -203,7 +207,7 @@ impl WikitextTableParser {
 
             // State::ReadCol
             (State::ReadCol, Event::ColStyle(_)) => {}
-            (State::ReadCol, Event::Col(_)) => self.state = State::ReadCol,
+            (State::ReadCol, Event::ColEnd(_)) => self.state = State::ReadCol,
             (State::ReadCol, Event::RowStart) => self.state = State::ReadRow,
 
             // Else

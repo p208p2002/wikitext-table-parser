@@ -41,7 +41,7 @@ fn main() {
             Event::ColStyle(col_style) => {
                 print!("col style: {:?}# ", col_style);
             }
-            Event::Col(text) => {
+            Event::ColEnd(text) => {
                 println!("col: {:?}#", text);
             }
             Event::TableEnd => {

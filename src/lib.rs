@@ -55,7 +55,7 @@ mod test_parser {
                     count_cols = 0;
                     println!("----- {:?} -----", row_style);
                 }
-                Event::Col(text) => {
+                Event::ColEnd(text) => {
                     count_cols += 1;
                     println!("col: {:?}#", text);
                 }
@@ -69,7 +69,7 @@ mod test_parser {
         assert_eq!(1, count_table_end)
     }
 
-    fn test_table_caption(path:String,expect_caption:String) {
+    fn test_table_caption(path: String, expect_caption: String) {
         // read table from text
         let mut file = match File::open(&path) {
             Ok(file) => file,
@@ -85,13 +85,12 @@ mod test_parser {
         let wikitext_table_parser = WikitextTableParser::new(&content);
         for event in wikitext_table_parser {
             match event {
-                Event::TableCaption(caption)=>{
-                    assert_eq!(caption,expect_caption);
+                Event::TableCaption(caption) => {
+                    assert_eq!(caption, expect_caption);
                 }
                 _ => {}
             }
         }
-    
     }
 
     #[test]
