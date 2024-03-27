@@ -26,7 +26,7 @@ A table in wikitext should like:
 use std::fs::File;
 use std::io::Read;
 use std::env;
-use wikitext_table_parser::parser::{Event as ParserEvent, WikitextTableParser};
+use wikitext_table_parser::parser::{Event, WikitextTableParser};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -51,25 +51,25 @@ fn main() {
     let wikitext_table_parser = WikitextTableParser::new(&content);
     for event in wikitext_table_parser {
         match event {
-            ParserEvent::TableStart => {
+            Event::TableStart => {
                 println!("Table START!");
             }
-            ParserEvent::TableStyle(table_style) => {
+            Event::TableStyle(table_style) => {
                 println!("table style{:?}#", table_style);
             }
-            ParserEvent::TableCaption(text) => {
+            Event::TableCaption(text) => {
                 println!("table name{:?}#", text);
             }
-            ParserEvent::RowStyle(row_style) => {
+            Event::RowStyle(row_style) => {
                 println!("----- {:?} -----", row_style);
             }
-            ParserEvent::ColStyle(col_style) => {
+            Event::ColStyle(col_style) => {
                 print!("col style: {:?}# ", col_style);
             }
-            ParserEvent::Col(text) => {
+            Event::Col(text) => {
                 println!("col: {:?}#", text);
             }
-            ParserEvent::TableEnd => {
+            Event::TableEnd => {
                 println!("Table END!");
             }
             _ => {}
