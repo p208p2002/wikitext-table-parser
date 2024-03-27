@@ -1,6 +1,5 @@
 use core::fmt;
 use std::collections::HashMap;
-use std::str::FromStr;
 use strum_macros::EnumString;
 use strum_macros::AsRefStr;
 
