@@ -35,7 +35,7 @@ fn main() {
             ParserEvent::TableCaptionEnd(text) => {
                 println!("table name{:?}#", text);
             }
-            ParserEvent::Row(row_style) => {
+            ParserEvent::RowStyle(row_style) => {
                 println!("----- {:?} -----", row_style);
             }
             ParserEvent::ColStyle(col_style) => {

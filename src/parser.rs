@@ -29,7 +29,7 @@ pub enum Event {
     TableCaptionStart,
     TableCaptionEnd(String),
     RowStart,
-    Row(String),
+    RowStyle(String),
 }
 
 #[derive(Debug)]
@@ -59,7 +59,7 @@ impl Iterator for WikitextTableParser {
 impl WikitextTableParser {
     pub fn new(wikitext_table: &str) -> Self {
         let tokenizer = tokenizer::Tokenizer::build();
-        let mut parser = WikitextTableParser {
+        let parser = WikitextTableParser {
             state: State::Idle,
             tokens: tokenizer.tokenize(wikitext_table),
             event_log_queue: Vec::new(),
@@ -110,34 +110,45 @@ impl WikitextTableParser {
                     self.transition(Event::TableEnd);
                 }
             }
+
             State::ReadTableCaption => {
                 self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableRow.as_ref() {
                     self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
-                } else if &token == SpecailTokens::TableHeaderCell.as_ref() {
+                }
+                // match ! after the caption, this type will not have a row style
+                // and should turn in to read col state 
+                else if &token == SpecailTokens::TableHeaderCell.as_ref() {
                     self.transition(Event::TableCaptionEnd(self.text_buffer.clone()));
                     self.clear_text_buffer();
+                    // even we do not read the `|-` (row start token)
+                    // we still send the read row event,
+                    // after that send a col start event (due to we match `!`)
                     self.transition(Event::RowStart);
-                    self.transition(Event::Row(String::from("dummy row style")));
+                    self.transition(Event::RowStyle(String::from("")));
                     self.transition(Event::ColStart);
                 }
             }
 
             State::ReadRow => {
+                self.append_to_text_buffer(&token);
                 if &token == SpecailTokens::TableDataCell.as_ref()
                     || &token == SpecailTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::Row(String::from("dummy row style")));
+                    self.transition(Event::RowStyle(self.text_buffer.clone()));
+                    self.clear_text_buffer();
                     self.transition(Event::ColStart);
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref()
                     || &token == SpecailTokens::TableHeaderCell2.as_ref()
                 {
-                    self.transition(Event::Row(String::from("dummy row style")));
+                    self.transition(Event::RowStyle(self.text_buffer.clone()));
+                    self.clear_text_buffer();
                     self.transition(Event::ColStart);
                 } else if &token == SpecailTokens::TableEnd.as_ref() {
                     self.transition(Event::TableEnd);
+                    self.clear_text_buffer();
                 }
             }
 
@@ -277,7 +288,7 @@ impl WikitextTableParser {
         // State::ReadRow => {
         //     if Regex::new(r"\n").unwrap().is_match(&buffer_string) {
         //         let clean_col_text = utils::clean_col_text(&buffer_string);
-        //         self.transition(Event::Row(clean_col_text));
+        //         self.transition(Event::RowStyle(clean_col_text));
         //         self.clear_buffer();
         //     }
         // }
