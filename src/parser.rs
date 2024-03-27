@@ -20,7 +20,7 @@ pub enum Event {
     TableStart,
     TableStyle(String),
     TableEnd,
-    ColStart,
+    ColStart(CellType),
     ColStyle(String),
     ColEnd(String),
     TableCaptionStart,
@@ -28,6 +28,12 @@ pub enum Event {
     RowStart,
     RowStyle(String),
     RowEnd,
+}
+
+#[derive(Debug, Clone)]
+pub enum CellType {
+    HeaderCell,
+    DataCell
 }
 
 #[derive(Debug)]
@@ -130,7 +136,7 @@ impl WikitextTableParser {
                     // after that send a col start event (due to we match `!`)
                     self.transition(Event::RowStart);
                     self.transition(Event::RowStyle(String::from("")));
-                    self.transition(Event::ColStart);
+                    self.transition(Event::ColStart(CellType::HeaderCell));
                 }
             }
 
@@ -141,13 +147,13 @@ impl WikitextTableParser {
                 {
                     self.transition(Event::RowStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
-                    self.transition(Event::ColStart);
+                    self.transition(Event::ColStart(CellType::DataCell));
                 } else if &token == SpecailTokens::TableHeaderCell.as_ref()
                     || &token == SpecailTokens::TableHeaderCell2.as_ref()
                 {
                     self.transition(Event::RowStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
-                    self.transition(Event::ColStart);
+                    self.transition(Event::ColStart(CellType::HeaderCell));
                 } else if &token == SpecailTokens::TableEnd.as_ref() {
                     self.transition(Event::RowEnd);
                     self.transition(Event::TableEnd);
@@ -203,7 +209,7 @@ impl WikitextTableParser {
             (State::ReadTable, Event::RowStart) => self.state = State::ReadRow,
 
             // State::ReadRow
-            (State::ReadRow, Event::ColStart) => self.state = State::ReadCol,
+            (State::ReadRow, Event::ColStart(_)) => self.state = State::ReadCol,
 
             // State::ReadCol
             (State::ReadCol, Event::ColStyle(_)) => {}
