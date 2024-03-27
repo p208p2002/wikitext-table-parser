@@ -57,10 +57,10 @@ fn main() {
             ParserEvent::TableStyle(table_style) => {
                 println!("table style{:?}#", table_style);
             }
-            ParserEvent::TableTitle(text) => {
+            ParserEvent::TableCaption(text) => {
                 println!("table name{:?}#", text);
             }
-            ParserEvent::Row(row_style) => {
+            ParserEvent::RowStyle(row_style) => {
                 println!("----- {:?} -----", row_style);
             }
             ParserEvent::ColStyle(col_style) => {
