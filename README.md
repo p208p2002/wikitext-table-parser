@@ -1,9 +1,9 @@
-# Wikitext Table Parser
+# Wiki Markup Table Parser
 
-A Rust implement for parse the wikitext's table.
+A Wiki Markup table parser written in Rust.
 
 ### What is this project for ?
-The wikitext is a special format used by wikipedia, most available wiki data or processing tool ignore the table data. This project implement a wikitext-table parser that help one to processing the table in wikitext or wiki-dump.
+Wiki Markup is a special format used by wikipedia, most available wiki data or processing tool ignore the table data. This project implement a wikitext-table parser that help one to processing the table in wikitext or wiki-dump.
 
 A table in wikitext should like:
 ```
