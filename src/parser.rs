@@ -33,7 +33,7 @@ pub enum Event {
 #[derive(Debug, Clone)]
 pub enum CellType {
     HeaderCell,
-    DataCell
+    DataCell,
 }
 
 #[derive(Debug)]
@@ -62,10 +62,12 @@ impl Iterator for WikitextTableParser {
 
 impl WikitextTableParser {
     pub fn new(wikitext_table: &str) -> Self {
+        // add `\n` at start to match `\n{|`, even it is at the first of context.
+        let text_for_parse = String::from("\n") + wikitext_table;
         let tokenizer = tokenizer::Tokenizer::build();
         let parser = WikitextTableParser {
             state: State::Idle,
-            tokens: tokenizer.tokenize(wikitext_table),
+            tokens: tokenizer.tokenize(&text_for_parse),
             event_log_queue: Vec::new(),
             text_buffer: String::from(""),
         };
