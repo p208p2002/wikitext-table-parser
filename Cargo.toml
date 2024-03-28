@@ -6,10 +6,10 @@ license = "Apache-2.0"
 keywords = ["wiki", "wikitext","table","parser"]
 categories = ["text-processing","parser-implementations"]
 description = "A Rust implement for parse the wikitext's table."
-documentation = "https://github.com/p208p2002/wiki-markup-table-parser"
+documentation = "https://github.com/p208p2002/wikitext-table-parser"
 readme = "README.md"
-homepage = "https://github.com/p208p2002/wiki-markup-table-parser"
-repository = "https://github.com/p208p2002/wiki-markup-table-parser"
+homepage = "https://github.com/p208p2002/wikitext-table-parser"
+repository = "https://github.com/p208p2002/wikitext-table-parser"
 exclude = [
     "wikitext_tables/*",
     "src/main.rs",
