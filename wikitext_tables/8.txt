@@ -1,0 +1,69 @@
+https://zh.wikipedia.org/zh-tw/1860%E6%85%95%E5%B0%BC%E9%BB%912021-2022%E7%90%83%E5%AD%A3
+===季前/歇冬熱身賽/友誼賽===
+季前集訓及熱身賽賽程由2021年6月19日至7月18日，[[1860慕尼黑]]一如多年的習慣，全隊前往鄰國[[奧地利]]作季前集訓。另外，球隊一般亦會於歇冬期間進行數場友誼賽，以保持球員狀態。<ref>[https://www.tsv1860.de/de/Aktuelles_News/5712.htm 季前/歇冬熱身賽/友誼賽資料參考自'''1860慕尼黑'''官方網站] {{Wayback|url=https://www.tsv1860.de/de/Aktuelles_News/5712.htm |date=20210720090506 }}。</ref>
+{| class="wikitable" style="padding:0.5em; border:2px solid #0070B8;font-size:90%"
+! style="background:#0070B8; color:white; text-align:center;" |賽事
+! style="background:#0070B8; color:white; text-align:center;" |日期
+! style="background:#0070B8; color:white; text-align:center;" |開賽時間
+! style="background:#0070B8; color:white; text-align:center;" |主場/作客
+! style="background:#0070B8; color:white; text-align:center;" |球隊
+! style="background:#0070B8; color:white; text-align:center;" |觀眾人數
+! style="background:#0070B8; color:white; text-align:center;" |賽果
+|-
+! style="background:#FFF; text-align:center;" |季前熱身賽
+! style="background:#FFF; text-align:left;" |2021年6月30日
+! style="background:#FFF; text-align:center;" |18:00
+! style="background:#FFF; text-align:center;" |作客
+! style="background:#FFF; text-align:center;" |[https://en.wikipedia.org/wiki/SV_Heimstetten 海姆斯特滕] {{Wayback|url=https://en.wikipedia.org/wiki/SV_Heimstetten |date=20190405125409 }}
+! style="background:#FFF; text-align:center;" |500
+! style="background:#FFF; text-align:center;" |{{color|#1CAC78|'''2:8'''}}
+|-
+! style="background:#FFF; text-align:center;" |季前熱身賽
+! style="background:#FFF; text-align:left;" |2021年7月2日
+! style="background:#FFF; text-align:center;" |17:00
+! style="background:#FFF; text-align:center;" |作客
+! style="background:#FFF; text-align:center;" |[[列特體育會|列特]]
+! style="background:#FFF; text-align:center;" |500
+! style="background:#FFF; text-align:center;" |{{color|#FF0000|'''1:0'''}}
+|-
+! style="background:#FFF; text-align:center;" |季前熱身賽
+! style="background:#FFF; text-align:left;" |2021年7月6日
+! style="background:#FFF; text-align:center;" |15:30
+! style="background:#FFF; text-align:center;" |作客
+! style="background:#FFF; text-align:center;" |[https://en.wikipedia.org/wiki/SK_Austria_Klagenfurt_(2007) 克拉根福] {{Wayback|url=https://en.wikipedia.org/wiki/SK_Austria_Klagenfurt_(2007) |date=20200610232127 }}
+! style="background:#FFF; text-align:center;" |400
+! style="background:#FFF; text-align:center;" |{{color|#1CAC78|'''1:2'''}}
+|-
+! style="background:#FFF; text-align:center;" |季前熱身賽
+! style="background:#FFF; text-align:left;" |2021年7月11日
+! style="background:#FFF; text-align:center;" |16:00
+! style="background:#FFF; text-align:center;" |主場
+! style="background:#FFF; text-align:center;" |[[瓦克尔布格豪森体育俱乐部|華卡爾布格豪森]]
+! style="background:#FFF; text-align:center;" |186
+! style="background:#FFF; text-align:center;" |{{color|#1CAC78|'''4:2'''}}
+|-
+! style="background:#FFF; text-align:center;" |季前熱身賽
+! style="background:#FFF; text-align:left;" |2021年7月7日
+! style="background:#FFF; text-align:center;" |13:00
+! style="background:#FFF; text-align:center;" |作客
+! style="background:#FFF; text-align:center;" |[[紐倫堡足球會|紐倫堡]]
+! style="background:#FFF; text-align:center;" |4,000
+! style="background:#FFF; text-align:center;" |{{color|#FF0000|'''3:2'''}}
+|-
+! style="background:#FFF; text-align:center;" |季前熱身賽
+! style="background:#FFF; text-align:left;" |2021年7月18日
+! style="background:#FFF; text-align:center;" |11:00
+! style="background:#FFF; text-align:center;" |主場
+! style="background:#FFF; text-align:center;" |[[阿倫草地體育會|阿倫]]
+! style="background:#FFF; text-align:center;" |186
+! style="background:#FFF; text-align:center;" |{{color|#0048BA|'''1:1'''}}
+|-
+! style="background:#FFF; text-align:center;" |歇冬熱身賽
+! style="background:#FFF; text-align:left;" |2022年1月7日
+! style="background:#FFF; text-align:center;" |12:30
+! style="background:#FFF; text-align:center;" |中立場
+! style="background:#FFF; text-align:center;" |[[汉莎罗斯托克足球俱乐部|羅斯托克]]
+! style="background:#FFF; text-align:center;" |200
+! style="background:#FFF; text-align:center;" |{{color|#1CAC78|'''3:1'''}}
+|}
+<small>'''備註：'''***開賽時間為[[德國]]當地時間***</small>

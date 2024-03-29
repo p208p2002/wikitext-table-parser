@@ -1,12 +1,17 @@
 use core::fmt;
+use std::any::TypeId;
 use std::collections::HashMap;
-use strum_macros::EnumString;
+use strum::IntoEnumIterator;
 use strum_macros::AsRefStr;
+use strum_macros::EnumIter;
+use strum_macros::EnumString; // 0.17.1
 
-// Wiki wable special token markup definition 
+// Wiki wable special token markup definition
 // https://en.wikipedia.org/wiki/Help:Table#Basic_table_markup
-#[derive(Debug, PartialEq, EnumString,AsRefStr)]
-pub enum SpecailTokens {
+
+#[derive(Debug, PartialEq, EnumString, AsRefStr, EnumIter)]
+pub enum TableSpecialTokens {
+    // used in table
     #[strum(serialize = "\n{|")]
     TableStart,
 
@@ -19,23 +24,52 @@ pub enum SpecailTokens {
     #[strum(serialize = "\n!")]
     TableHeaderCell,
 
-    #[strum(serialize="!!")]
+    #[strum(serialize = "!!")]
     TableHeaderCell2,
 
     #[strum(serialize = "\n|")]
     TableDataCell,
 
-    #[strum(serialize="||")]
+    #[strum(serialize = "||")]
     TableDataCell2,
 
     #[strum(serialize = "\n|}")]
     TableEnd,
 
+    // other specail tokens
     #[strum(serialize = "<nowiki>")]
     NoWikiStart,
 
     #[strum(serialize = "</nowiki>")]
     NoWikiEnd,
+}
+
+pub fn get_all_table_special_tokens() -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    for token in TableSpecialTokens::iter() {
+        out.push(token.as_ref().to_string());
+    }
+    out
+}
+
+#[derive(Debug, PartialEq, EnumString, AsRefStr, EnumIter)]
+pub enum CellTextSpecialTokens {
+    #[strum(serialize = "[[")]
+    LinkStart,
+    #[strum(serialize = "]]")]
+    LinkEnd,
+    #[strum(serialize = "style")]
+    Style,
+    #[strum(serialize = "|")]
+    Sep,
+}
+
+pub fn get_all_cell_text_special_tokens() -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    for token in CellTextSpecialTokens::iter() {
+        out.push(token.as_ref().to_string());
+    }
+    out
 }
 
 #[derive(Debug, Clone)]
@@ -62,19 +96,7 @@ impl fmt::Display for TokenParseTreeNode {
 }
 
 impl Tokenizer {
-    pub fn build() -> Self {
-        let special_tokens = [
-            SpecailTokens::TableStart.as_ref(),
-            SpecailTokens::TableEnd.as_ref(),
-            SpecailTokens::TableCaption.as_ref(),
-            SpecailTokens::TableDataCell.as_ref(),
-            SpecailTokens::TableDataCell2.as_ref(),
-            SpecailTokens::TableRow.as_ref(),
-            SpecailTokens::TableHeaderCell.as_ref(),
-            SpecailTokens::TableHeaderCell2.as_ref(),
-            SpecailTokens::NoWikiStart.as_ref(),
-            SpecailTokens::NoWikiEnd.as_ref()
-        ];
+    pub fn build(special_tokens:Vec<String>) -> Self {
 
         let mut root_node = TokenParseTreeNode {
             val: '$', // a root's val is unused

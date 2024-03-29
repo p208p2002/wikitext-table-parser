@@ -1,8 +1,6 @@
 use std::str::FromStr;
-
-use crate::tokenizer;
-use crate::tokenizer::SpecailTokens;
-// use regex::{self, Regex};
+use crate::tokenizer::TableSpecialTokens;
+use crate::tokenizer::Tokenizer;
 
 // https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference
 
@@ -61,10 +59,9 @@ impl Iterator for WikitextTableParser {
 }
 
 impl WikitextTableParser {
-    pub fn new(wikitext_table: &str) -> Self {
+    pub fn new(tokenizer: Tokenizer, wikitext_table: &str) -> Self {
         // add `\n` at start to match `\n{|`, even it is at the first of context.
         let text_for_parse = String::from("\n") + wikitext_table;
-        let tokenizer = tokenizer::Tokenizer::build();
         let parser = WikitextTableParser {
             state: State::Idle,
             tokens: tokenizer.tokenize(&text_for_parse),
@@ -77,7 +74,7 @@ impl WikitextTableParser {
     }
 
     fn append_to_text_buffer(&mut self, s: &str) {
-        let token = SpecailTokens::from_str(s);
+        let token = TableSpecialTokens::from_str(s);
         match token {
             Ok(_) => {
                 // do nothing if is a special token
@@ -100,37 +97,37 @@ impl WikitextTableParser {
         let token = self.tokens.remove(0);
         match self.state {
             State::Idle => {
-                if &token == SpecailTokens::TableStart.as_ref() {
+                if &token == TableSpecialTokens::TableStart.as_ref() {
                     self.transition(Event::TableStart)
                 }
             }
             State::ReadTable => {
                 self.append_to_text_buffer(&token);
-                if &token == SpecailTokens::TableCaption.as_ref() {
+                if &token == TableSpecialTokens::TableCaption.as_ref() {
                     self.transition(Event::TableStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::TableCaptionStart);
-                } else if &token == SpecailTokens::TableRow.as_ref() {
+                } else if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::TableStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 }
                 // end of table
-                else if &token == SpecailTokens::TableEnd.as_ref() {
+                else if &token == TableSpecialTokens::TableEnd.as_ref() {
                     self.transition(Event::TableEnd);
                 }
             }
 
             State::ReadTableCaption => {
                 self.append_to_text_buffer(&token);
-                if &token == SpecailTokens::TableRow.as_ref() {
+                if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::TableCaption(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
                 }
                 // match ! after the caption, this type will not have a row style
                 // and should turn in to read col state
-                else if &token == SpecailTokens::TableHeaderCell.as_ref() {
+                else if &token == TableSpecialTokens::TableHeaderCell.as_ref() {
                     self.transition(Event::TableCaption(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     // even we do not read the `|-` (row start token)
@@ -144,19 +141,19 @@ impl WikitextTableParser {
 
             State::ReadRow => {
                 self.append_to_text_buffer(&token);
-                if &token == SpecailTokens::TableDataCell.as_ref()
-                    || &token == SpecailTokens::TableDataCell2.as_ref()
+                if &token == TableSpecialTokens::TableDataCell.as_ref()
+                    || &token == TableSpecialTokens::TableDataCell2.as_ref()
                 {
                     self.transition(Event::RowStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::ColStart(CellType::DataCell));
-                } else if &token == SpecailTokens::TableHeaderCell.as_ref()
-                    || &token == SpecailTokens::TableHeaderCell2.as_ref()
+                } else if &token == TableSpecialTokens::TableHeaderCell.as_ref()
+                    || &token == TableSpecialTokens::TableHeaderCell2.as_ref()
                 {
                     self.transition(Event::RowStyle(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::ColStart(CellType::HeaderCell));
-                } else if &token == SpecailTokens::TableEnd.as_ref() {
+                } else if &token == TableSpecialTokens::TableEnd.as_ref() {
                     self.transition(Event::RowEnd);
                     self.transition(Event::TableEnd);
                     self.clear_text_buffer();
@@ -167,23 +164,23 @@ impl WikitextTableParser {
                 self.append_to_text_buffer(&token);
 
                 // match | or ||
-                if &token == SpecailTokens::TableDataCell.as_ref()
-                    || &token == SpecailTokens::TableDataCell2.as_ref()
+                if &token == TableSpecialTokens::TableDataCell.as_ref()
+                    || &token == TableSpecialTokens::TableDataCell2.as_ref()
                 {
                     self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                 // match ! or !!
-                } else if &token == SpecailTokens::TableHeaderCell.as_ref()
-                    || &token == SpecailTokens::TableHeaderCell2.as_ref()
+                } else if &token == TableSpecialTokens::TableHeaderCell.as_ref()
+                    || &token == TableSpecialTokens::TableHeaderCell2.as_ref()
                 {
                     self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
-                } else if &token == SpecailTokens::TableRow.as_ref() {
+                } else if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowEnd);
                     self.transition(Event::RowStart);
-                } else if &token == SpecailTokens::TableEnd.as_ref() {
+                } else if &token == TableSpecialTokens::TableEnd.as_ref() {
                     self.transition(Event::ColEnd(self.get_text_buffer_data()));
                     self.clear_text_buffer();
                     self.transition(Event::RowEnd);

@@ -2,6 +2,7 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use wikitext_table_parser::parser::{Event, WikitextTableParser};
+use wikitext_table_parser::tokenizer::{get_all_table_special_tokens, Tokenizer};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -22,8 +23,8 @@ fn main() {
         eprintln!("Error reading the file into a string.");
         return;
     }
-
-    let wikitext_table_parser = WikitextTableParser::new(&content);
+    let tokenizer = Tokenizer::build(get_all_table_special_tokens());
+    let wikitext_table_parser = WikitextTableParser::new(tokenizer, &content);
     for event in wikitext_table_parser {
         match event {
             Event::TableStart => {

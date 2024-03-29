@@ -10,7 +10,7 @@ mod test_tokenizer {
     fn tokenize() {
         let raw_string = String::from("\n{|123||\n|}<><nowiki>");
         let expect_result = Vec::from(["\n{|", "1", "2", "3", "||", "\n|}", "<", ">", "<nowiki>"]);
-        let tokenizer = tokenizer::Tokenizer::build();
+        let tokenizer = tokenizer::Tokenizer::build(tokenizer::get_all_table_special_tokens());
         let out = tokenizer.tokenize(&raw_string);
         assert_eq!(out.join(" / "), expect_result.join(" / "));
     }
@@ -19,6 +19,7 @@ mod test_tokenizer {
 #[cfg(test)]
 mod test_parser {
     use crate::parser::{Event, WikitextTableParser};
+    use crate::tokenizer::{get_all_table_special_tokens, Tokenizer};
     use std::fs::File;
     use std::io::Read;
 
@@ -43,7 +44,8 @@ mod test_parser {
         let mut count_table_start = 0;
         let mut count_table_end = 0;
 
-        let wikitext_table_parser = WikitextTableParser::new(&content);
+        let tokenizer = Tokenizer::build(get_all_table_special_tokens());
+        let wikitext_table_parser = WikitextTableParser::new(tokenizer, &content);
         for event in wikitext_table_parser {
             match event {
                 Event::RowStyle(row_style) => {
@@ -82,7 +84,9 @@ mod test_parser {
             return;
         }
 
-        let wikitext_table_parser = WikitextTableParser::new(&content);
+        let tokenizer = Tokenizer::build(get_all_table_special_tokens());
+        let wikitext_table_parser = WikitextTableParser::new(tokenizer, &content);
+
         for event in wikitext_table_parser {
             match event {
                 Event::TableCaption(caption) => {
