@@ -19,7 +19,9 @@ mod test_tokenizer {
 #[cfg(test)]
 mod test_parser {
     use crate::parser::{Event, WikitextTableParser};
-    use crate::tokenizer::{get_all_table_special_tokens, Tokenizer};
+    use crate::tokenizer::{
+        get_all_cell_text_special_tokens, get_all_table_special_tokens, Tokenizer,
+    };
     use std::fs::File;
     use std::io::Read;
 
@@ -44,8 +46,10 @@ mod test_parser {
         let mut count_table_start = 0;
         let mut count_table_end = 0;
 
-        let tokenizer = Tokenizer::build(get_all_table_special_tokens());
-        let wikitext_table_parser = WikitextTableParser::new(tokenizer, &content);
+        let table_tokenizer = Tokenizer::build(get_all_table_special_tokens());
+        let cell_tokenizer = Tokenizer::build(get_all_cell_text_special_tokens());
+        let wikitext_table_parser =
+            WikitextTableParser::new(table_tokenizer, cell_tokenizer, &content,true);
         for event in wikitext_table_parser {
             match event {
                 Event::RowStyle(row_style) => {
@@ -84,8 +88,10 @@ mod test_parser {
             return;
         }
 
-        let tokenizer = Tokenizer::build(get_all_table_special_tokens());
-        let wikitext_table_parser = WikitextTableParser::new(tokenizer, &content);
+        let table_tokenizer = Tokenizer::build(get_all_table_special_tokens());
+        let cell_tokenizer = Tokenizer::build(get_all_cell_text_special_tokens());
+        let wikitext_table_parser =
+            WikitextTableParser::new(table_tokenizer, cell_tokenizer, &content,true);
 
         for event in wikitext_table_parser {
             match event {

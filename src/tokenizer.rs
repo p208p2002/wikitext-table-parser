@@ -1,5 +1,4 @@
 use core::fmt;
-use std::any::TypeId;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::AsRefStr;
@@ -33,6 +32,9 @@ pub enum TableSpecialTokens {
     #[strum(serialize = "||")]
     TableDataCell2,
 
+    // #[strum(serialize = "|")]
+    // TableDataCellStyleEnd,
+
     #[strum(serialize = "\n|}")]
     TableEnd,
 
@@ -58,10 +60,18 @@ pub enum CellTextSpecialTokens {
     LinkStart,
     #[strum(serialize = "]]")]
     LinkEnd,
-    #[strum(serialize = "style")]
-    Style,
     #[strum(serialize = "|")]
     Sep,
+    #[strum(serialize = "{{")]
+    TemplateStart,
+    #[strum(serialize = "}}")]
+    TemplateEnd,
+    #[strum(serialize = "'''")]
+    Blockquote,
+    #[strum(serialize = "<")]
+    HtmlTagStart,
+    #[strum(serialize = ">")]
+    HtmlTagEnd
 }
 
 pub fn get_all_cell_text_special_tokens() -> Vec<String> {
@@ -78,6 +88,7 @@ pub struct TokenParseTreeNode {
     children: HashMap<char, TokenParseTreeNode>,
 }
 
+#[derive(Debug)]
 pub struct Tokenizer {
     token_tree: TokenParseTreeNode,
 }
