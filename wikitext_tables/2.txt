@@ -6,7 +6,7 @@
 ! scope="col" | 运动
 ! scope="col" | 主场
 ! scope="col" | 成立年份
-|-
+|- style=height:7em
 ! scope="row" style="font-weight: normal; text-align: center;" | [[上海申花]]
 | [[中国足球超级联赛]]（CSL）
 | 足球

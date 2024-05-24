@@ -1,0 +1,47 @@
+== Revenue ==
+{| class="wikitable sortable" style="float: right; margin-left: 10px;"
+|-
+|+ Revenue<br /><small>(in millions [[United States dollar|USD]])</small>
+|-
+! Year !! Revenue !! Growth
+|-
+| 2004|| ${{nts|0.4}}<ref name=facebook-ipo>{{cite news |access-date=May 21, 2015 |url=https://techcrunch.com/2012/02/01/facebook-ipo-facebook-ipo-facebook-ipo/ |title=Facebook's IPO: An End To All The Revenue Speculation |work=[[TechCrunch]] |date=February 1, 2012 |author=Tsotsis, Alexia |archive-date=February 10, 2021 |archive-url=https://web.archive.org/web/20210210223828/https://techcrunch.com/2012/02/01/facebook-ipo-facebook-ipo-facebook-ipo/ |url-status=live}}</ref>|| style="text-align:center;"|—
+|-
+| 2005|| ${{nts|9}}<ref name=facebook-ipo />|| {{#expr:(9/0.4*100 round 0)-100}}%
+|-
+| 2006|| ${{nts|48}}<ref name=facebook-ipo />|| {{#expr:(48/9*100 round 0)-100}}%
+|-
+| 2007|| ${{nts|153}}<ref name=facebook-ipo />|| {{#expr:(153/48*100 round 0)-100}}%
+|-
+| 2008|| ${{nts|280}}<ref name=turns-down>{{cite news |access-date=July 13, 2010 |url=https://techcrunch.com/2009/05/19/facebook-turns-down-8-billion-valuation-term-sheet-claims-2009-revenues-to-be-550-million/ |title=Facebook Turns Down $8 billion Valuation Term Sheet, Claims 2009 Revenues Will Be $550 million |work=[[TechCrunch]] |date=May 19, 2009 |author=Arrington, Michael |archive-date=July 12, 2010 |archive-url=https://web.archive.org/web/20100712222539/http://techcrunch.com/2009/05/19/facebook-turns-down-8-billion-valuation-term-sheet-claims-2009-revenues-to-be-550-million/ |url-status=live }}</ref>|| {{#expr:(280/153*100 round 0)-100}}%
+|-
+| 2009|| ${{nts|775}}<ref name=reported>{{cite news |access-date=January 5, 2011 |url=https://techcrunch.com/2011/01/05/report-facebook-revenue-was-777-million-in-2009-net-income-200-million/ |title=Report: Facebook Revenue Was $777 Million In 2009, Net Income $200 Million |work=[[TechCrunch]] |date=January 5, 2011 |author=Tsotsis, Alexia |archive-date=February 10, 2021 |archive-url=https://web.archive.org/web/20210210223832/https://techcrunch.com/2011/01/05/report-facebook-revenue-was-777-million-in-2009-net-income-200-million/ |url-status=live}}</ref>|| {{#expr:(775/280*100 round 0)-100}}%
+|-
+| 2010|| ${{nts|2000}}<ref name=likely>{{cite news |access-date=January 5, 2011 |url=https://www.bloomberg.com/news/2010-12-16/facebook-sales-said-likely-to-reach-2-billion-this-year-beating-target.html |title=Facebook 2010 Sales Said Likely to Reach $2 Billion, More Than Estimated |work=[[Bloomberg News|Bloomberg]] |location=New York |date=December 16, 2010 |author=Womack, Brian |archive-date=May 20, 2021 |archive-url=https://web.archive.org/web/20210520104807/https://www.bloomberg.com/news/articles/2010-12-16/facebook-sales-said-likely-to-reach-2-billion-this-year-beating-target |url-status=live }}</ref>|| {{#expr:(2000/775*100 round 0)-100}}%
+|-
+| 2011|| ${{nts|3711}}<ref>{{cite web |date=January 30, 2013 |title=Facebook Reports Fourth Quarter and Full Year 2012 Results |url=http://investor.fb.com/releasedetail.cfm?ReleaseID=736911 |url-status=dead |archive-url=https://web.archive.org/web/20130131173616/http://investor.fb.com/releasedetail.cfm?ReleaseID=736911 |archive-date=January 31, 2013 |access-date=February 7, 2014 |website=Facebook }}</ref>||{{#expr:(3711/2000*100 round 0)-100}}%
+|-
+| 2012|| ${{nts|5089}}<ref name="fb2013annual">{{cite web |date=January 29, 2014 |title=Facebook Reports Fourth Quarter and Full Year 2013 Results |url=http://investor.fb.com/releasedetail.cfm?ReleaseID=821954 |url-status=dead |archive-url=https://web.archive.org/web/20140209131546/http://investor.fb.com/releasedetail.cfm?ReleaseID=821954 |archive-date=February 9, 2014 |access-date=February 7, 2014 |website=Facebook }}</ref>||{{#expr:(5089/3711*100 round 0)-100}}%
+|-
+| 2013|| ${{nts|7872}}<ref name=fb2013annual />|| {{#expr:(7872/5089*100 round 0)-100}}%
+|-
+| 2014|| ${{nts|12466}}<ref name="fb2014annual">{{cite web |title=Facebook Reports Fourth Quarter and Full Year 2014 Results |url=http://investor.fb.com/releasedetail.cfm?ReleaseID=893395 |url-status=dead |archive-url=https://web.archive.org/web/20150129183732/http://investor.fb.com/releasedetail.cfm?ReleaseID=893395 |archive-date=January 29, 2015 |access-date=May 27, 2015 |website=Facebook }}</ref>||{{#expr:(12466/7872*100 round 0)-100}}%
+|-
+| 2015|| ${{nts|17928}}<ref name="fb2015annual">{{cite web |title=Facebook Reports Fourth Quarter and Full Year 2015 Results |url=http://investor.fb.com/releasedetail.cfm?ReleaseID=952040 |url-status=dead |archive-url=https://web.archive.org/web/20160130120630/http://investor.fb.com/releasedetail.cfm?ReleaseID=952040 |archive-date=January 30, 2016 |access-date=March 13, 2016 |website=Facebook }}</ref>||{{#expr:(17928/12466*100 round 0)-100}}%
+|-
+| 2016|| ${{nts|27638}}<ref name=AnnualReport2016>{{cite web |access-date=April 14, 2018 |url=https://s21.q4cdn.com/399680738/files/doc_financials/annual_reports/FB_AR_2016_FINAL.pdf |title=Facebook Annual Report 2016 |publisher=Facebook |archive-date=February 10, 2021 |archive-url=https://web.archive.org/web/20210210223848/https://s21.q4cdn.com/399680738/files/doc_financials/annual_reports/FB_AR_2016_FINAL.pdf |url-status=live}}</ref>|| {{#expr:(27638/17928*100 round 0)-100}}%
+|-
+| 2017|| ${{nts|40653}}<ref name="fb2017annuall">{{cite web |title=Facebook Reports Fourth Quarter and Full Year 2017 Results |url=https://investor.fb.com/investor-news/press-release-details/2018/Facebook-Reports-Fourth-Quarter-and-Full-Year-2017-Results/default.aspx |access-date=April 14, 2018 |website=Facebook |archive-date=February 10, 2021 |archive-url=https://web.archive.org/web/20210210223750/https://investor.fb.com/investor-news/press-release-details/2018/Facebook-Reports-Fourth-Quarter-and-Full-Year-2017-Results/default.aspx |url-status=live}}</ref>||{{#expr:(40653/27638*100 round 0)-100}}%
+|-
+|2018|| ${{nts|55838}}<ref name=autogenerated1>{{cite web |url=https://investor.fb.com/investor-news/press-release-details/2019/Facebook-Reports-Fourth-Quarter-and-Full-Year-2018-Results/default.aspx |title=Facebook Reports Fourth Quarter and Full Year 2018 Results |website=investor.fb.com |access-date=February 4, 2019 |archive-date=February 3, 2019 |archive-url=https://web.archive.org/web/20190203124349/https://investor.fb.com/investor-news/press-release-details/2019/Facebook-Reports-Fourth-Quarter-and-Full-Year-2018-Results/default.aspx |url-status=live }}</ref>|| {{#expr:(55838/40653*100 round 0)-100}}%
+|-
+|2019|| ${{nts|70697}}<ref name=autogenerated1 />|| {{#expr:(70697/55838*100 round 0)-100}}%
+|-
+|2020|| ${{nts|85965}}<ref>{{cite web |url=https://investor.fb.com/investor-news/press-release-details/2021/Facebook-Reports-Fourth-Quarter-and-Full-Year-2020-Results/default.aspx |title=Facebook Reports Fourth Quarter and Full Year 2020 Results |website=investor.fb.com |access-date=January 28, 2021 |archive-date=January 28, 2021 |archive-url=https://web.archive.org/web/20210128000722/https://investor.fb.com/investor-news/press-release-details/2021/Facebook-Reports-Fourth-Quarter-and-Full-Year-2020-Results/default.aspx |url-status=live }}</ref>|| {{#expr:(85965/70697*100 round 0)-100}}%
+|-
+|2021|| |${{nts|117,929}}<ref>{{cite web |url=https://investor.fb.com/investor-news/press-release-details/2022/Meta-Reports-Fourth-Quarter-and-Full-Year-2021-Results/default.aspx |title=Meta Reports Fourth Quarter and Full Year 2021 Results |work=Meta Platforms |date=February 3, 2022 |access-date=February 3, 2022 |archive-date=February 3, 2022 |archive-url=https://web.archive.org/web/20220203184926/https://investor.fb.com/investor-news/press-release-details/2022/Meta-Reports-Fourth-Quarter-and-Full-Year-2021-Results/default.aspx |url-status=live }}</ref>|| {{#expr:(117929/85965*100 round 0)-100}}%
+|-
+|2022|| ${{nts|116609}}<ref name=Annual10K2022>{{cite web |title= Meta Platforms, Inc. 2022 Annual Report (Form 10-K) |url= https://www.sec.gov/ix?doc=/Archives/edgar/data/0001326801/000132680123000013/meta-20221231.htm |date= February 2, 2023 |publisher= [[U.S. Securities and Exchange Commission]] |access-date= February 3, 2023 |archive-date= February 3, 2023 |archive-url= https://web.archive.org/web/20230203020908/https://www.sec.gov/ix?doc=/Archives/edgar/data/0001326801/000132680123000013/meta-20221231.htm |url-status= live }}</ref> ||{{#expr:(116609/117929*100 round 0)-100}}%
+|-
+|2023|| ${{nts|134902}}<ref name=Annual10K2023 /> ||{{#expr:(134902/116609*100 round 0)-100}}%
+|}
