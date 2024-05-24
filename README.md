@@ -29,10 +29,13 @@ wikitext_table_parser = "0.2.3"
 
 ### Usage Example
 ```rust
+use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::env;
 use wikitext_table_parser::parser::{Event, WikitextTableParser};
+use wikitext_table_parser::tokenizer::{
+    get_all_cell_text_special_tokens, get_all_table_special_tokens, Tokenizer,
+};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -53,8 +56,10 @@ fn main() {
         eprintln!("Error reading the file into a string.");
         return;
     }
-
-    let wikitext_table_parser = WikitextTableParser::new(&content);
+    let table_tokenizer = Tokenizer::build(get_all_table_special_tokens());
+    let cell_tokenizer = Tokenizer::build(get_all_cell_text_special_tokens());
+    let wikitext_table_parser =
+        WikitextTableParser::new(table_tokenizer, cell_tokenizer, &content, true);
     for event in wikitext_table_parser {
         match event {
             Event::TableStart => {
@@ -70,10 +75,10 @@ fn main() {
                 println!("----- {:?} -----", row_style);
             }
             Event::ColStyle(col_style) => {
-                print!("col style: {:?}# ", col_style);
+                print!("col style: {:?} -- ", col_style);
             }
             Event::ColEnd(text) => {
-                println!("col: {:?}#", text);
+                println!("col data: {:?}", text);
             }
             Event::TableEnd => {
                 println!("Table END!");
@@ -82,4 +87,5 @@ fn main() {
         }
     }
 }
+
 ```
