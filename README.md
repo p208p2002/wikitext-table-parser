@@ -24,7 +24,7 @@ A table in wikitext should like:
 ### Usage
 ```toml
 [dependencies]
-wikitext_table_parser = "0.2.3"
+wikitext_table_parser = "0.2.4"
 ```
 
 ### Usage Example
