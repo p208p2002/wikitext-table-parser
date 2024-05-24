@@ -138,33 +138,22 @@ impl WikitextTableParser {
         return vec![style,cell_text];
     }
 
-    fn get_text_buffer_data(&self, clean_cell_text: bool) -> String {
+    fn get_text_buffer_data(&self) -> String {
+        let cell_raw_text = self.text_buffer.clone().trim().to_string();
+        let split_texts = self.split_cell_style_and_text(cell_raw_text);
+        let style: String = split_texts[0].clone();
+        let cell_text = split_texts[1].clone();
+        // println!("{:?}",style);
+        return cell_text
+    }
+
+    fn get_style_text_buffer_data(&self) -> String {
         let cell_raw_text = self.text_buffer.clone().trim().to_string();
         let split_texts = self.split_cell_style_and_text(cell_raw_text);
         let style = split_texts[0].clone();
         let cell_text = split_texts[1].clone();
-        return cell_text
-        // if clean_cell_text {
-        //     let mut buf = String::new();
-        //     let mut lock_buf = false;
-        //     let cell_text_tokens = self.cell_tokenizer.tokenize(&cell_raw_text);
-        //     for token in cell_text_tokens {
-        //         match CellTextSpecialTokens::from_str(&token) {
-        //             Ok(cell_text_sp_token) => match cell_text_sp_token {
-        //                 CellTextSpecialTokens::HtmlTagStart => lock_buf = true,
-        //                 CellTextSpecialTokens::HtmlTagEnd => lock_buf = false,
-        //                 _ => {}
-        //             },
-        //             Err(_) => {
-        //                 if !lock_buf {
-        //                     buf += &token;
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     return buf;
-        // }
-        // return cell_raw_text;
+        // println!("{:?}",style);
+        return style
     }
 
     fn step(&mut self) {
@@ -179,13 +168,13 @@ impl WikitextTableParser {
                 self.append_to_text_buffer(&token);
                 if &token == TableSpecialTokens::TableCaption.as_ref() {
                     self.transition(Event::TableStyle(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::TableCaptionStart);
                 } else if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::TableStyle(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
@@ -200,7 +189,7 @@ impl WikitextTableParser {
                 self.append_to_text_buffer(&token);
                 if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::TableCaption(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::RowStart);
@@ -209,7 +198,7 @@ impl WikitextTableParser {
                 // and should turn in to read col state
                 else if &token == TableSpecialTokens::TableHeaderCell.as_ref() {
                     self.transition(Event::TableCaption(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     // even we do not read the `|-` (row start token)
@@ -227,7 +216,7 @@ impl WikitextTableParser {
                     || &token == TableSpecialTokens::TableDataCell2.as_ref()
                 {
                     self.transition(Event::RowStyle(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::ColStart(CellType::DataCell));
@@ -235,7 +224,7 @@ impl WikitextTableParser {
                     || &token == TableSpecialTokens::TableHeaderCell2.as_ref()
                 {
                     self.transition(Event::RowStyle(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::ColStart(CellType::HeaderCell));
@@ -253,8 +242,11 @@ impl WikitextTableParser {
                 if &token == TableSpecialTokens::TableDataCell.as_ref()
                     || &token == TableSpecialTokens::TableDataCell2.as_ref()
                 {
+                    self.transition(Event::ColStyle(
+                        self.get_style_text_buffer_data()
+                    ));
                     self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                 }
@@ -262,20 +254,29 @@ impl WikitextTableParser {
                 else if &token == TableSpecialTokens::TableHeaderCell.as_ref()
                     || &token == TableSpecialTokens::TableHeaderCell2.as_ref()
                 {
+                    self.transition(Event::ColStyle(
+                        self.get_style_text_buffer_data()
+                    ));
                     self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                 } else if &token == TableSpecialTokens::TableRow.as_ref() {
+                    self.transition(Event::ColStyle(
+                        self.get_style_text_buffer_data()
+                    ));
                     self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::RowEnd);
                     self.transition(Event::RowStart);
                 } else if &token == TableSpecialTokens::TableEnd.as_ref() {
+                    self.transition(Event::ColStyle(
+                        self.get_style_text_buffer_data()
+                    ));
                     self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(self.clean_cell_text),
+                        self.get_text_buffer_data(),
                     ));
                     self.clear_text_buffer();
                     self.transition(Event::RowEnd);

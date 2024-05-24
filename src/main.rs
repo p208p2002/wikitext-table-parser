@@ -44,10 +44,10 @@ fn main() {
                 println!("----- {:?} -----", row_style);
             }
             Event::ColStyle(col_style) => {
-                print!("col style: {:?}# ", col_style);
+                print!("col style: {:?} -- ", col_style);
             }
             Event::ColEnd(text) => {
-                println!("col: {:?}#", text);
+                println!("col data: {:?}", text);
             }
             Event::TableEnd => {
                 println!("Table END!");
