@@ -26,7 +26,7 @@ A table in wikitext should like:
 ##### Installation
 ```toml
 [dependencies]
-wikitext_table_parser = "0.2.4"
+wikitext_table_parser = "0.3.0"
 ```
 ```rust
 use std::env;
