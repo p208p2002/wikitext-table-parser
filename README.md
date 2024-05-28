@@ -2,7 +2,9 @@
 
 A WikiText table parser written in Rust.
 
-### What is this project for ?
+We also have a binding for [Python](https://github.com/p208p2002/wikitext-table-parser?tab=readme-ov-file#python).
+
+## What is this project for ?
 WikiText is a special format used by wikipedia, most available wiki data or processing tool ignore the table data. This project implement a table parser that help one to processing the table in wikitext or wiki-dump.
 
 A table in wikitext should like:
@@ -20,14 +22,14 @@ A table in wikitext should like:
 |}
 ```
 > also see the reference of [wikitext table](https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference) for more detail.
-
-### Usage
-#### Rust
-##### Installation
+## Documentation
+### Rust
+#### Installation
 ```toml
 [dependencies]
 wikitext_table_parser = "0.3.0"
 ```
+#### Usage Example
 ```rust
 use std::env;
 use std::fs::File;
@@ -90,7 +92,16 @@ fn main() {
 
 ```
 
-#### Python
+### Python
+#### Installation
+
+1. Download the wheel file from [release](https://github.com/p208p2002/wikitext-table-parser/releases/tag/py-v0.3.0)
+
+2. Install the wheel
+```
+pip install wikitext_table_parser-xxx.whl
+```
+#### Usage Example
 ```python
 import sys
 from wikitext_table_parser import (
