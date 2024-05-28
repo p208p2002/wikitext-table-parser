@@ -18,8 +18,10 @@ exclude = [
 [lib]
 name = "wikitext_table_parser"
 path = "src/lib.rs"
+crate-type = ["cdylib","lib"]
 
 [dependencies]
 regex = "1.10.*"
 strum = "0.26"
 strum_macros = "0.26"
+pyo3 = "0.21.0-dev"
