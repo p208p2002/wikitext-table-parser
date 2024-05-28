@@ -31,25 +31,25 @@ fn main() {
         WikitextTableParser::new(table_tokenizer, cell_tokenizer, &content, true);
     for event in wikitext_table_parser {
         match event {
-            Event::TableStart => {
+            Event::TableStart {} => {
                 println!("Table START!");
             }
-            Event::TableStyle(table_style) => {
+            Event::TableStyle { text: table_style } => {
                 println!("table style{:?}#", table_style);
             }
-            Event::TableCaption(text) => {
+            Event::TableCaption { text } => {
                 println!("table name{:?}#", text);
             }
-            Event::RowStyle(row_style) => {
+            Event::RowStyle { text: row_style } => {
                 println!("----- {:?} -----", row_style);
             }
-            Event::ColStyle(col_style) => {
+            Event::ColStyle { text: col_style } => {
                 print!("col style: {:?} -- ", col_style);
             }
-            Event::ColEnd(text) => {
+            Event::ColEnd { text } => {
                 println!("col data: {:?}", text);
             }
-            Event::TableEnd => {
+            Event::TableEnd {} => {
                 println!("Table END!");
             }
             _ => {}

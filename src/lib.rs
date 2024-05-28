@@ -1,6 +1,19 @@
 pub mod parser;
 pub mod tokenizer;
 pub mod utils;
+use pyo3::prelude::*;
+
+/// A Python module implemented in Rust.
+#[pymodule]
+fn wikitext_table_parser(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(tokenizer::get_all_cell_text_special_tokens, m)?)?;
+    m.add_function(wrap_pyfunction!(tokenizer::get_all_table_special_tokens, m)?)?;
+    m.add_class::<tokenizer::Tokenizer>()?;
+    m.add_class::<parser::WikitextTableParser>()?;
+    m.add_class::<parser::Event>()?;
+    m.add_class::<parser::CellType>()?;
+    Ok(())
+}
 
 #[cfg(test)]
 mod test_tokenizer {
@@ -52,7 +65,7 @@ mod test_parser {
             WikitextTableParser::new(table_tokenizer, cell_tokenizer, &content,true);
         for event in wikitext_table_parser {
             match event {
-                Event::RowStyle(row_style) => {
+                Event::RowStyle{text:row_style} => {
                     if count_rows > 0 {
                         // do not work just after parse the first row, which is a table headr.
                         assert_eq!(expect_cols, count_cols);
@@ -61,12 +74,12 @@ mod test_parser {
                     count_cols = 0;
                     println!("----- {:?} -----", row_style);
                 }
-                Event::ColEnd(text) => {
+                Event::ColEnd{text} => {
                     count_cols += 1;
                     println!("col: {:?}#", text);
                 }
-                Event::TableStart => count_table_start += 1,
-                Event::TableEnd => count_table_end += 1,
+                Event::TableStart{} => count_table_start += 1,
+                Event::TableEnd{} => count_table_end += 1,
                 _ => {}
             }
         }
@@ -95,7 +108,7 @@ mod test_parser {
 
         for event in wikitext_table_parser {
             match event {
-                Event::TableCaption(caption) => {
+                Event::TableCaption{text:caption }=> {
                     assert_eq!(caption, expect_caption);
                 }
                 _ => {}

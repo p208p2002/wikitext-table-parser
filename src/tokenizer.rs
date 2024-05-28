@@ -4,6 +4,7 @@ use strum::IntoEnumIterator;
 use strum_macros::AsRefStr;
 use strum_macros::EnumIter;
 use strum_macros::EnumString; // 0.17.1
+use pyo3::prelude::*;
 
 // Wiki wable special token markup definition
 // https://en.wikipedia.org/wiki/Help:Table#Basic_table_markup
@@ -46,6 +47,7 @@ pub enum TableSpecialTokens {
     NoWikiEnd,
 }
 
+#[pyfunction]
 pub fn get_all_table_special_tokens() -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     for token in TableSpecialTokens::iter() {
@@ -74,6 +76,7 @@ pub enum CellTextSpecialTokens {
     HtmlTagEnd
 }
 
+#[pyfunction]
 pub fn get_all_cell_text_special_tokens() -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     for token in CellTextSpecialTokens::iter() {
@@ -88,7 +91,8 @@ pub struct TokenParseTreeNode {
     children: HashMap<char, TokenParseTreeNode>,
 }
 
-#[derive(Debug)]
+#[pyclass]
+#[derive(Debug,Clone)]
 pub struct Tokenizer {
     token_tree: TokenParseTreeNode,
 }
@@ -106,7 +110,9 @@ impl fmt::Display for TokenParseTreeNode {
     }
 }
 
+#[pymethods]
 impl Tokenizer {
+    #[new]
     pub fn build(special_tokens:Vec<String>) -> Self {
 
         let mut root_node = TokenParseTreeNode {

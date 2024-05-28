@@ -1,6 +1,7 @@
 use crate::tokenizer::CellTextSpecialTokens;
 use crate::tokenizer::TableSpecialTokens;
 use crate::tokenizer::Tokenizer;
+use pyo3::prelude::*;
 use std::str::FromStr;
 
 // https://en.wikiversity.org/wiki/Help:Wikitext_quick_reference
@@ -14,31 +15,36 @@ pub enum State {
     ReadRow,
 }
 
+#[pyclass]
 #[derive(Debug, Clone)]
 pub enum Event {
-    TableStart,
-    TableStyle(String),
-    TableEnd,
-    ColStart(CellType),
-    ColStyle(String),
-    ColEnd(String),
-    TableCaptionStart,
-    TableCaption(String),
-    RowStart,
-    RowStyle(String),
-    RowEnd,
+    TableStart {},
+    TableStyle { text: String },
+    TableEnd {},
+    ColStart { cell_type: CellType },
+    ColStyle { text: String },
+    ColEnd { text: String },
+    TableCaptionStart {},
+    TableCaption { text: String },
+    RowStart {},
+    RowStyle { text: String },
+    RowEnd {},
 }
 
+#[pyclass]
 #[derive(Debug, Clone)]
 pub enum CellType {
     HeaderCell,
     DataCell,
 }
 
+#[pyclass]
 #[derive(Debug)]
 pub struct WikitextTableParser {
     state: State,
+    #[pyo3(get,set)]
     event_log_queue: Vec<Event>,
+    #[pyo3(get,set)]
     tokens: Vec<String>,
     text_buffer: String,
     table_tokenizer: Tokenizer,
@@ -62,7 +68,9 @@ impl Iterator for WikitextTableParser {
     }
 }
 
+#[pymethods]
 impl WikitextTableParser {
+    #[new]
     pub fn new(
         table_tokenizer: Tokenizer,
         cell_tokenizer: Tokenizer,
@@ -70,7 +78,7 @@ impl WikitextTableParser {
         clean_cell_text: bool,
     ) -> Self {
         // add `\n` at start to match `\n{|`, even it is at the first of context.
-        let text_for_parse = String::from("\n") + wikitext_table;
+        let text_for_parse: String = String::from("\n") + wikitext_table;
         let parser = WikitextTableParser {
             state: State::Idle,
             tokens: table_tokenizer.tokenize(&text_for_parse),
@@ -123,11 +131,10 @@ impl WikitextTableParser {
 
                     _ => {}
                 },
-                Err(_) => {
-                }
+                Err(_) => {}
             }
             temp += &token;
-            if already_match_style_end && style.len() == 0{
+            if already_match_style_end && style.len() == 0 {
                 style = temp.clone();
                 temp = String::new();
             }
@@ -135,7 +142,7 @@ impl WikitextTableParser {
 
         cell_text = temp;
 
-        return vec![style,cell_text];
+        return vec![style, cell_text];
     }
 
     fn get_text_buffer_data(&self) -> String {
@@ -144,7 +151,7 @@ impl WikitextTableParser {
         let style: String = split_texts[0].clone();
         let cell_text = split_texts[1].clone();
         // println!("{:?}",style);
-        return cell_text
+        return cell_text;
     }
 
     fn get_style_text_buffer_data(&self) -> String {
@@ -153,7 +160,7 @@ impl WikitextTableParser {
         let style = split_texts[0].clone();
         let cell_text = split_texts[1].clone();
         // println!("{:?}",style);
-        return style
+        return style;
     }
 
     fn step(&mut self) {
@@ -161,52 +168,56 @@ impl WikitextTableParser {
         match self.state {
             State::Idle => {
                 if &token == TableSpecialTokens::TableStart.as_ref() {
-                    self.transition(Event::TableStart)
+                    self.transition(Event::TableStart {})
                 }
             }
             State::ReadTable => {
                 self.append_to_text_buffer(&token);
                 if &token == TableSpecialTokens::TableCaption.as_ref() {
-                    self.transition(Event::TableStyle(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::TableStyle {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::TableCaptionStart);
+                    self.transition(Event::TableCaptionStart {});
                 } else if &token == TableSpecialTokens::TableRow.as_ref() {
-                    self.transition(Event::TableStyle(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::TableStyle {
+                        text: self.get_style_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::RowStart);
+                    self.transition(Event::RowStart {});
                 }
                 // end of table
                 else if &token == TableSpecialTokens::TableEnd.as_ref() {
-                    self.transition(Event::TableEnd);
+                    self.transition(Event::TableEnd {});
                 }
             }
 
             State::ReadTableCaption => {
                 self.append_to_text_buffer(&token);
                 if &token == TableSpecialTokens::TableRow.as_ref() {
-                    self.transition(Event::TableCaption(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::TableCaption {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::RowStart);
+                    self.transition(Event::RowStart {});
                 }
                 // match ! after the caption, this type will not have a row style
                 // and should turn in to read col state
                 else if &token == TableSpecialTokens::TableHeaderCell.as_ref() {
-                    self.transition(Event::TableCaption(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::TableCaption {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
                     // even we do not read the `|-` (row start token)
                     // we still send the read row event,
                     // after that send a col start event (due to we match `!`)
-                    self.transition(Event::RowStart);
-                    self.transition(Event::RowStyle(String::from("")));
-                    self.transition(Event::ColStart(CellType::HeaderCell));
+                    self.transition(Event::RowStart {});
+                    self.transition(Event::RowStyle {
+                        text: String::from(""),
+                    });
+                    self.transition(Event::ColStart {
+                        cell_type: CellType::HeaderCell,
+                    });
                 }
             }
 
@@ -215,22 +226,26 @@ impl WikitextTableParser {
                 if &token == TableSpecialTokens::TableDataCell.as_ref()
                     || &token == TableSpecialTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::RowStyle(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::RowStyle {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::ColStart(CellType::DataCell));
+                    self.transition(Event::ColStart {
+                        cell_type: CellType::DataCell,
+                    });
                 } else if &token == TableSpecialTokens::TableHeaderCell.as_ref()
                     || &token == TableSpecialTokens::TableHeaderCell2.as_ref()
                 {
-                    self.transition(Event::RowStyle(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::RowStyle {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::ColStart(CellType::HeaderCell));
+                    self.transition(Event::ColStart {
+                        cell_type: CellType::HeaderCell,
+                    });
                 } else if &token == TableSpecialTokens::TableEnd.as_ref() {
-                    self.transition(Event::RowEnd);
-                    self.transition(Event::TableEnd);
+                    self.transition(Event::RowEnd {});
+                    self.transition(Event::TableEnd {});
                     self.clear_text_buffer();
                 }
             }
@@ -242,45 +257,45 @@ impl WikitextTableParser {
                 if &token == TableSpecialTokens::TableDataCell.as_ref()
                     || &token == TableSpecialTokens::TableDataCell2.as_ref()
                 {
-                    self.transition(Event::ColStyle(
-                        self.get_style_text_buffer_data()
-                    ));
-                    self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::ColStyle {
+                        text: self.get_style_text_buffer_data(),
+                    });
+                    self.transition(Event::ColEnd {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
                 }
                 // match \n! or \n!!
                 else if &token == TableSpecialTokens::TableHeaderCell.as_ref()
                     || &token == TableSpecialTokens::TableHeaderCell2.as_ref()
                 {
-                    self.transition(Event::ColStyle(
-                        self.get_style_text_buffer_data()
-                    ));
-                    self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::ColStyle {
+                        text: self.get_style_text_buffer_data(),
+                    });
+                    self.transition(Event::ColEnd {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
                 } else if &token == TableSpecialTokens::TableRow.as_ref() {
-                    self.transition(Event::ColStyle(
-                        self.get_style_text_buffer_data()
-                    ));
-                    self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::ColStyle {
+                        text: self.get_style_text_buffer_data(),
+                    });
+                    self.transition(Event::ColEnd {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::RowEnd);
-                    self.transition(Event::RowStart);
+                    self.transition(Event::RowEnd {});
+                    self.transition(Event::RowStart {});
                 } else if &token == TableSpecialTokens::TableEnd.as_ref() {
-                    self.transition(Event::ColStyle(
-                        self.get_style_text_buffer_data()
-                    ));
-                    self.transition(Event::ColEnd(
-                        self.get_text_buffer_data(),
-                    ));
+                    self.transition(Event::ColStyle {
+                        text: self.get_style_text_buffer_data(),
+                    });
+                    self.transition(Event::ColEnd {
+                        text: self.get_text_buffer_data(),
+                    });
                     self.clear_text_buffer();
-                    self.transition(Event::RowEnd);
-                    self.transition(Event::TableEnd);
+                    self.transition(Event::RowEnd {});
+                    self.transition(Event::TableEnd {});
                 }
             }
         }
@@ -291,25 +306,29 @@ impl WikitextTableParser {
         self.event_log_queue.push(event.clone());
         match (self.state, event) {
             // State::Idle
-            (State::Idle, Event::TableStart) => self.state = State::ReadTable,
+            (State::Idle, Event::TableStart {}) => self.state = State::ReadTable,
 
             // State::ReadTableCaption
-            (State::ReadTableCaption, Event::TableCaption(_)) => self.state = State::ReadTable,
+            (State::ReadTableCaption, Event::TableCaption { text }) => {
+                self.state = State::ReadTable
+            }
 
             // State::ReadTable
-            (State::ReadTable, Event::TableCaptionStart) => self.state = State::ReadTableCaption,
-            (State::ReadTable, Event::TableEnd) => {
+            (State::ReadTable, Event::TableCaptionStart {}) => self.state = State::ReadTableCaption,
+            (State::ReadTable, Event::TableEnd {}) => {
                 self.state = State::Idle;
             }
-            (State::ReadTable, Event::RowStart) => self.state = State::ReadRow,
+            (State::ReadTable, Event::RowStart {}) => self.state = State::ReadRow,
 
             // State::ReadRow
-            (State::ReadRow, Event::ColStart(_)) => self.state = State::ReadCol,
+            (State::ReadRow, Event::ColStart { cell_type }) => self.state = State::ReadCol,
 
             // State::ReadCol
-            (State::ReadCol, Event::ColStyle(_)) => {}
-            (State::ReadCol, Event::ColEnd(_)) => self.state = State::ReadCol,
-            (State::ReadCol, Event::RowStart) => self.state = State::ReadRow,
+            (State::ReadCol, Event::ColStyle { text }) => {}
+            (State::ReadCol, Event::ColEnd { text }) => {
+                self.state = State::ReadCol
+            },
+            (State::ReadCol, Event::RowStart {}) => self.state = State::ReadRow,
 
             // Else
             (_, _) => {}
