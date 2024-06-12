@@ -98,7 +98,7 @@ fn main() {
 ### Python
 #### Installation
 
-1. Download the wheel file from [release](https://github.com/p208p2002/wikitext-table-parser/releases/tag/py-v0.3.0)
+1. Download the wheel file from [release](https://github.com/p208p2002/wikitext-table-parser/releases)
 
 2. Install the wheel
 ```
