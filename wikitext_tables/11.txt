@@ -1,0 +1,202 @@
+{| class="wikitable" style="font-size: small;"
+! rowspan="2" | 年份
+! colspan="3" | 全部空间
+! rowspan="2" | 年份
+! colspan="3" | 条目空间
+|-
+! 第一名
+! 第二名
+! 第三名
+! 第一名
+! 第二名
+! 第三名
+|-
+! 2002
+| Ghyll（0.3k）
+| Formulax（0.2k）
+| Mountain（0.0k）
+! 2002
+| Ghyll（0.2k）
+| Formulax（0.1k）
+| Mountain（0.0k）
+|-
+! 2003
+| Shizhao（6.4k）
+| Samuel~zhwiki（3.8k）
+| Cncs wikipedia（2.5k）
+! 2003
+| Shizhao（3.2k）
+| Samuel~zhwiki（2.2k）
+| Cncs wikipedia（2.0k）
+|-
+! 2004
+| Shizhao（22.8k）
+| Tomchiukc（8.8k）
+| Wing（7.9k）
+! 2004
+| Shizhao（9.7k）
+| Ktsquare（6.7k）
+| Tomchiukc（6.0k）
+|-
+! 2005
+| Shizhao（30.7k）
+| Ffaarr（22.2k）
+| Mosesofmason（17.8k）
+! 2005
+| 高晶（15.3k）
+| Ffaarr（13.6k）
+| Shizhao（13.4k）
+|-
+! 2006
+| Shizhao（25.0k）
+| Sl（23.5k）
+| GuestsZhen（22.8k）
+! 2006
+| Chong Fat（19.1k）
+| Winertai（13.3k）
+| Sl（12.0k）
+|-
+! 2007
+| Flamelai（24.7k）
+| Chong Fat（23.6k）
+| Shizhao（20.0k）
+! 2007
+| Chong Fat（22.5k）
+| Flamelai（15.2k）
+| Ws227（13.7k）
+|-
+! 2008
+| S19991002（27.4k）
+| Chong Fat（25.8k）
+| Flamelai（21.8k）
+! 2008
+| Chong Fat（24.9k）
+| S19991002（19.5k）
+| Flamelai（14.4k）
+|-
+! 2009
+| Chong Fat（26.2k）
+| Symplectopedia（19.2k）
+| PhiLiP（18.2k）
+! 2009
+| Chong Fat（25.0k）
+| Dirrival（13.8k）
+| Symplectopedia（13.0k）
+|-
+! 2010
+| Cncs wikipedia（27.9k）
+| Chong Fat（26.7k）
+| AT（23.7k）
+! 2010
+| Chong Fat（24.5k）
+| Dirrival（15.6k）
+| User:Litalex（15.0k）
+|-
+! 2011
+| AT（40.3k）
+| Chong Fat（24.8k）
+| Nivekin（20.0k）
+! 2011
+| AT（28.9k）
+| Chong Fat（22.7k）
+| Dirrival（14.2k）
+|-
+! 2012
+| Alexchris（51.3k）
+| Tianyamm2（31.4k）
+| Wangxuan8331800（29.5k）
+! 2012
+| Alexchris（48.3k）
+| Tianyamm2（27.7k）
+| Fs155117（22.1k）
+|-
+! 2013
+| Fs155117（37.7k）
+| Berthe（24.9k）
+| Outlookxp（23.6k）
+! 2013
+| Fs155117（37.4k）
+| Huandy618（18.7k）
+| Pedrotangtang（15.8k）
+|-
+! 2014
+| Fs155117（42.3k）
+| Berthe（29.6k）
+| JuneAugust（25.9k）
+! 2014
+| Fs155117（42.1k）
+| Pedrotangtang（20.7k）
+| Berthe（19.4k）
+|-
+! 2015
+| Berthe（27.2k）
+| Jarodalien（27.1k）
+| Huandy618（26.9k）
+! 2015
+| Huandy618（21.5k）
+| Jarodalien（19.4k）
+| Nlu（18.5k）
+|-
+! 2016
+| Owennson（41.7k）
+| Berthe（34.5k）
+| Jarodalien（25.5k）
+! 2016
+| Owennson（33.3k）
+| Jarodalien（18.8k）
+| Huandy618（18.1k）
+|-
+! 2017
+| Owennson（29.0k）
+| Sgsg（26.8k）
+| Ryokie38（23.9k）
+! 2017
+| Ryokie38（22.1k）
+| Owennson（20.9k）
+| Sgsg（19.2k）
+|-
+! 2018
+| AirScott（38k）
+| Bluedeck（33k）
+| 佛祖西来（33k）
+! 2018
+| 佛祖西来（27k）
+| Dirrival（26k）
+| Ryokie38（22k）
+|-
+! 2019
+| Bigbullfrog1996（54k）
+| 佛祖西来（54k）
+| 高晶（38k）
+! 2019
+| 佛祖西来（41k）
+| Dirrival（30k）
+| Liu116（28k）
+|-
+! 2020
+| 佛祖西来（75k）
+| Liu116（69k）
+| Aronlee90（60k）
+! 2020
+| 佛祖西来（57k）
+| IAmNotTmbw（55k）
+| Liu116（50k）
+|-
+! 2021
+| 佛祖西来（132k）
+| Bigbullfrog1996（83k）
+| 寒吉（57k）
+! 2021
+| 佛祖西来（58k）
+| Bigbullfrog1996（46k）
+| Nrya（43k）
+|-
+! 2022
+| 寒吉（116k）
+| Bigbullfrog1996（101k）
+| 佛祖西来（85k）
+! 2022
+| 寒吉（101k）
+| Bigbullfrog1996（78k）
+| 佛祖西来（56k）
+|}
