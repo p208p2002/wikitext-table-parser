@@ -42,9 +42,9 @@ pub enum CellType {
 #[derive(Debug)]
 pub struct WikitextTableParser {
     state: State,
-    #[pyo3(get,set)]
+    #[pyo3(get, set)]
     event_log_queue: Vec<Event>,
-    #[pyo3(get,set)]
+    #[pyo3(get, set)]
     tokens: Vec<String>,
     text_buffer: String,
     table_tokenizer: Tokenizer,
@@ -165,6 +165,7 @@ impl WikitextTableParser {
 
     fn step(&mut self) {
         let token = self.tokens.remove(0);
+        // println!("{:?}", token);
         match self.state {
             State::Idle => {
                 if &token == TableSpecialTokens::TableStart.as_ref() {
@@ -182,6 +183,12 @@ impl WikitextTableParser {
                 } else if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::TableStyle {
                         text: self.get_style_text_buffer_data(),
+                    });
+                    self.clear_text_buffer();
+                    self.transition(Event::RowStart {});
+                } else if &token == TableSpecialTokens::TableHeaderCell.as_ref() {
+                    self.transition(Event::TableStyle {
+                        text: self.get_text_buffer_data(),
                     });
                     self.clear_text_buffer();
                     self.transition(Event::RowStart {});
@@ -204,6 +211,7 @@ impl WikitextTableParser {
                 // match ! after the caption, this type will not have a row style
                 // and should turn in to read col state
                 else if &token == TableSpecialTokens::TableHeaderCell.as_ref() {
+                    // catch table caption and trans the state to "State::ReadTable"
                     self.transition(Event::TableCaption {
                         text: self.get_text_buffer_data(),
                     });
@@ -264,6 +272,9 @@ impl WikitextTableParser {
                         text: self.get_text_buffer_data(),
                     });
                     self.clear_text_buffer();
+                    self.transition(Event::ColStart {
+                        cell_type: CellType::DataCell,
+                    });
                 }
                 // match \n! or \n!!
                 else if &token == TableSpecialTokens::TableHeaderCell.as_ref()
@@ -276,6 +287,9 @@ impl WikitextTableParser {
                         text: self.get_text_buffer_data(),
                     });
                     self.clear_text_buffer();
+                    self.transition(Event::ColStart {
+                        cell_type: CellType::HeaderCell,
+                    });
                 } else if &token == TableSpecialTokens::TableRow.as_ref() {
                     self.transition(Event::ColStyle {
                         text: self.get_style_text_buffer_data(),
@@ -325,9 +339,7 @@ impl WikitextTableParser {
 
             // State::ReadCol
             (State::ReadCol, Event::ColStyle { text }) => {}
-            (State::ReadCol, Event::ColEnd { text }) => {
-                self.state = State::ReadCol
-            },
+            (State::ReadCol, Event::ColEnd { text }) => self.state = State::ReadCol,
             (State::ReadCol, Event::RowStart {}) => self.state = State::ReadRow,
 
             // Else

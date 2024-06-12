@@ -34,6 +34,7 @@ for event in parser.event_log_queue:
         print("col style:", event.text)
     elif isinstance(event, Event.ColEnd):
         print("col data:", event.text)
+        print("-"*20)
     elif isinstance(event, Event.TableCaptionStart):
         pass
     elif isinstance(event, Event.TableCaption):
@@ -43,6 +44,6 @@ for event in parser.event_log_queue:
     elif isinstance(event, Event.RowStyle):
         print("row style:", event.text)
     elif isinstance(event, Event.RowEnd):
-        print("-"*20)
+        print("="*30)
     else:
         raise NotImplementedError(event)

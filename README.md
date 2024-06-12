@@ -27,7 +27,7 @@ A table in wikitext should like:
 #### Installation
 ```toml
 [dependencies]
-wikitext_table_parser = "0.3.0"
+wikitext_table_parser = "0.3.1"
 ```
 #### Usage Example
 ```rust
@@ -64,25 +64,28 @@ fn main() {
         WikitextTableParser::new(table_tokenizer, cell_tokenizer, &content, true);
     for event in wikitext_table_parser {
         match event {
-            Event::TableStart => {
+            Event::TableStart {} => {
                 println!("Table START!");
             }
-            Event::TableStyle(table_style) => {
+            Event::TableStyle { text: table_style } => {
                 println!("table style{:?}#", table_style);
             }
-            Event::TableCaption(text) => {
+            Event::TableCaption { text } => {
                 println!("table name{:?}#", text);
             }
-            Event::RowStyle(row_style) => {
+            Event::RowStyle { text: row_style } => {
                 println!("----- {:?} -----", row_style);
             }
-            Event::ColStyle(col_style) => {
-                print!("col style: {:?} -- ", col_style);
+            Event::ColStart { cell_type } =>{
+                print!("{:?} ",cell_type);
             }
-            Event::ColEnd(text) => {
-                println!("col data: {:?}", text);
+            Event::ColStyle { text: col_style } => {
+                print!("style: {:?} -> ", col_style);
             }
-            Event::TableEnd => {
+            Event::ColEnd { text } => {
+                println!("data: {:?}", text);
+            }
+            Event::TableEnd {} => {
                 println!("Table END!");
             }
             _ => {}
@@ -139,6 +142,7 @@ for event in parser.event_log_queue:
         print("col style:", event.text)
     elif isinstance(event, Event.ColEnd):
         print("col data:", event.text)
+        print("-"*20)
     elif isinstance(event, Event.TableCaptionStart):
         pass
     elif isinstance(event, Event.TableCaption):
@@ -148,7 +152,7 @@ for event in parser.event_log_queue:
     elif isinstance(event, Event.RowStyle):
         print("row style:", event.text)
     elif isinstance(event, Event.RowEnd):
-        print("-"*20)
+        print("="*30)
     else:
         raise NotImplementedError(event)
 ```

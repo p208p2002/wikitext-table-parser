@@ -43,11 +43,14 @@ fn main() {
             Event::RowStyle { text: row_style } => {
                 println!("----- {:?} -----", row_style);
             }
+            Event::ColStart { cell_type } =>{
+                print!("{:?} ",cell_type);
+            }
             Event::ColStyle { text: col_style } => {
-                print!("col style: {:?} -- ", col_style);
+                print!("style: {:?} -> ", col_style);
             }
             Event::ColEnd { text } => {
-                println!("col data: {:?}", text);
+                println!("data: {:?}", text);
             }
             Event::TableEnd {} => {
                 println!("Table END!");
